@@ -69,10 +69,11 @@
                         (format t "↑")
                     )
                 )
-                do (format t "~a " (aref dp i j))
+                do (format t "~a " (aref dp i j)) ; XXX
             )
-            do (format t "~%")
+            do (format t "~%") ; XXX
         )
+        (format t "~%") ; XXX
         (let
             (
                 (lcslength (aref dp l1n l2n))
@@ -108,21 +109,48 @@
     (let
         (
             (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
+            (lcscurlen 0) (j 1)
+            (l1pos (pop strpos))
+            (l2pos (car strpos))
+            ; (l2pos (pop strpos))
+        )
+        ; (print (nth 1 (car strpos)))
+        ; (print (car strpos))
+        ; (print l2pos)
+        (loop for i from 1 to l1n
+            ; do (loop for j from 1 to l2n
+                do (cond
+                    ((= i (nth lcscurlen l1pos))
+                        (loop while (< j (nth lcscurlen l2pos))
+                            do (format t "+~a~%" (nth j l2))
+                            (incf j)
+                        )
+                        (format t " ~a~%" (nth i l1))
+                        (incf lcscurlen)
+                        (incf j)
+                    )
+                    ((/= i (nth lcscurlen (car strpos)))
+                        (format t "-~a~%" (nth i l1))
+                        ; (incf lcscurlen)
+                    )
+                )
+            ; )
         )
     )
 )
 
 (defun main ()
     (setq *l1* (read-file-to-list "./file1.txt"))
-    (dolist (i *l1*) (format t "~a~%" i))
+    (dolist (i *l1*) (format t "~a~%" i)) ; XXX
     (setq *l2* (read-file-to-list "./file2.txt"))
-    (dolist (i *l2*) (format t "~a~%" i))
+    (dolist (i *l2*) (format t "~a~%" i)) ; XXX
 
     (let
         (
             (strpos (lcs *l1* *l2*))
         )
-        (print strpos)
+        ; (print strpos)
+        (printdiff strpos *l1* *l2*)
     )
 )
 
