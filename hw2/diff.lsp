@@ -1,34 +1,24 @@
-(defparameter *ll* '(""))
+(defparameter *l1* '(""))
+(defparameter *l2* '(""))
+
 (defun read-file-to-list (filename l)
-    ; (let ((in1 (open "./file1.txt" :if-does-not-exist nil)))
-    (let ((in1 (open filename :if-does-not-exist nil)))
-          ; (in2 (open "./file2.txt" :if-does-not-exist nil)))
-        (when t
-            (loop for line1 = (read-line in1 nil)
-                while line1
-                    do (push line1 (cdr l))
-                    ; do (format t "~a ~d~%" line1 (length line1)) ;and collect line1
+    (let ((in (open filename :if-does-not-exist nil)))
+        (when in
+            (loop for line = (read-line in nil)
+                while line
+                    do (push line (cdr l))
+                    ; do (format t "~a ~d~%" line (length line))
             )
-            (close in1)
-            ; (close in2)
+            (close in)
         )
     )
 )
 
-(defun print-elements-of-list (list)
-    (while list
-        (format t "~a~%" (car list))
-        (setq list (cdr list))))
-
 (defun main ()
-    (read-file-to-list "./file1.txt" *ll*)
-    ; (setq new (reverse *ll*))
-    (let (( *nl* (reverse *ll*)))
-        (dolist (i *nl*) (format t "~a~%" i)))
-    ; (dolist (i  *ll*) (format t "~a~%" i))
-    (setq *ll* '(""))
-    (read-file-to-list "./file2.txt" *ll*)
-    (dolist (i (reverse *ll*)) (format t "~a~%" i))
-    ; (print-elements-of-list *ll*)
+    (read-file-to-list "./file1.txt" *l1*)
+    (dolist (i (reverse *l1*)) (format t "~a~%" i))
+    (read-file-to-list "./file2.txt" *l2*)
+    (dolist (i (reverse *l2*)) (format t "~a~%" i))
 )
+
 (main)
