@@ -18,9 +18,21 @@
 (defun lcs (l1 l2)
     (let ((l1n (- (length l1) 1)) (l2n (- (length l2) 1)))
         (setq dp (make-array (list (+ l1n 1) (+ l2n 1)) :initial-element 0))
-        (loop for x from 0 to l1n
-            do (loop for y from 0 to l2n
-                do (format t "~a" (aref dp x y))
+        (loop for i from 1 to l1n
+            do (loop for j from 1 to l2n
+                ; do (format t "~a" (aref dp i j))
+                do (if (string= (nth i *l1*) (nth j *l2*))
+                    (setf (aref dp i j) (+ (aref dp (- i 1) (- j 1)) 1))
+                    (setf (aref dp i j)
+                        (max (aref dp (- i 1) j)(aref dp i (- j 1)))
+                    )
+                )
+            )
+            ; do (format t "~%")
+        )
+        (loop for i from 1 to l1n
+            do (loop for j from 1 to l2n
+                do (format t "~a" (aref dp i j))
             )
             do (format t "~%")
         )
@@ -37,6 +49,7 @@
         ; (dolist (j (reverse *l2*)) (format t "~a~%" (string= i j))); (print (string= i j))
     ; )
     (lcs *l1* *l2*)
+
 )
 
 (main)
