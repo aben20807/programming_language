@@ -13,11 +13,9 @@
             (loop for line = (read-line in nil)
                 while line
                     do (push line l)
-                    ; do (format t "~a ~d~%" line (length line))
             )
             (setq l (reverse l))
             (push nil l)
-            ; (print l)
             (close in)
             (return-from read-file-to-list l)
         )
@@ -28,14 +26,11 @@
     (let
         (
             (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
-            ; (rl1 (reverse l1)) (rl2 (reverse l2))
         )
         (setq dp (make-array (list (+ l1n 1) (+ l2n 1)) :initial-element 0))
         (setq path (make-array (list (+ l1n 1) (+ l2n 1)) :initial-element 0))
-        ; (print rl1)
         (loop for i from 1 to l1n
             do (loop for j from 1 to l2n
-                    ; do(format t "~a~%" (nth i rl1))
                 do (cond
                     ((string= (nth i l1) (nth j l2))
                         (setf (aref dp i j)
@@ -88,7 +83,6 @@
     (dolist (i *l2*) (format t "~a~%" i))
 
     (lcs *l1* *l2*)
-
 )
 
 (main)
