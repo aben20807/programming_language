@@ -77,11 +77,14 @@
             (
                 (lcslength (aref dp l1n l2n))
                 (i l1n) (j l2n) (commons nil)
+                (l1pos nil) (l2pos nil) (strpos nil)
             )
             (loop while (> lcslength 0)
                 do (cond
                     ((= (aref path i j) 0)
                         (push (nth i l1) commons)
+                        (push i l1pos)
+                        (push j l2pos)
                         (decf lcslength)
                         (decf i)
                         (decf j)
@@ -94,7 +97,17 @@
                     )
                 )
             )
-            (print commons)
+            (push l2pos strpos)
+            (push l1pos strpos)
+            (return-from lcs strpos)
+        )
+    )
+)
+
+(defun printdiff (strpos l1 l2)
+    (let
+        (
+            (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
         )
     )
 )
@@ -105,7 +118,12 @@
     (setq *l2* (read-file-to-list "./file2.txt"))
     (dolist (i *l2*) (format t "~a~%" i))
 
-    (lcs *l1* *l2*)
+    (let
+        (
+            (strpos (lcs *l1* *l2*))
+        )
+        (print strpos)
+    )
 )
 
 (main)
