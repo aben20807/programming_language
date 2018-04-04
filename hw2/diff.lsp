@@ -1,5 +1,6 @@
-(defparameter *l1* '(""))
-(defparameter *l2* '(""))
+(defparameter *l1* '(nil))
+(defparameter *l2* '(nil))
+(defvar dp)
 
 (defun read-file-to-list (filename l)
     (let ((in (open filename :if-does-not-exist nil)))
@@ -15,25 +16,15 @@
 )
 
 (defun lcs (l1 l2)
-    (loop for i in l1
-        ; do (print i)
+    (let ((l1n (- (length l1) 1)) (l2n (- (length l2) 1)))
+        (setq dp (make-array (list (+ l1n 1) (+ l2n 1)) :initial-element 0))
+        (loop for x from 0 to l1n
+            do (loop for y from 0 to l2n
+                do (format t "~a" (aref dp x y))
+            )
+            do (format t "~%")
+        )
     )
-    ; (print (length l1))
-    ; (print (length l2))
-    ; (setq myarray (make-array '(2 2); ((length l1) (length l2))
-        ; :initial-element '0
-        ; :adjustable t
-    ; ))
-    ; (write myarray)
-    ; (terpri)
-    ; (setq l1n '(length l1))
-    (write
-        (make-array (list (length l1) (length l2)) :initial-element 0)
-    )
-    ; (let ((l1n (length l1) (l2n (length l2))))
-    ; (write (make-array '(l1n l2n) :initial-element 0))
-    ; (terpri)
-    ; )
 )
 
 (defun main ()
