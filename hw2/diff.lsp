@@ -95,17 +95,18 @@
             )
             (push l2pos strpos)
             (push l1pos strpos)
-            (return-from lcs strpos)
+            ; (return-from lcs strpos)
+            (return-from lcs (values l1pos l2pos))
         )
     )
 )
 
-(defun printdiff (strpos l1 l2)
+(defun printdiff (l1pos l2pos l1 l2)
     (let
         (
             (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
             (lcscurlen 0) (i 1) (j 1)
-            (l1pos (pop strpos)) (l2pos (car strpos))
+            ; (l1pos (pop strpos)) (l2pos (car strpos))
         )
         (loop while (<= i l1n)
             do (cond
@@ -147,10 +148,8 @@
     ; (dolist (i *l1*) (format t "~a~%" i)) ; DEBUG
     (setq *l2* (read-file-to-list "./file2.txt"))
     ; (dolist (i *l2*) (format t "~a~%" i)) ; DEBUG
-
-    (let
-        ((strpos (lcs *l1* *l2*)))
-        (printdiff strpos *l1* *l2*)
+    (multiple-value-bind (l1pos l2pos) (lcs *l1* *l2*)
+        (printdiff l1pos l2pos *l1* *l2*)
     )
 )
 
