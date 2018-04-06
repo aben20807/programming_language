@@ -54,24 +54,21 @@
                 )
             )
         )
-        ; (loop for i from 1 to l1n
-            ; do (loop for j from 1 to l2n
-                ; do (cond
-                    ; ((= (aref path i j) 0)
-                        ; (format t "↖") ; DEBUG
-                    ; )
-                    ; ((= (aref path i j) 1)
-                        ; (format t "←") ; DEBUG
-                    ; )
-                    ; ((= (aref path i j) 2)
-                        ; (format t "↑") ; DEBUG
-                    ; )
-                ; )
-                ; do (format t "~a " (aref dp i j)) ; DEBUG
-            ; )
-            ; do (format t "~%") ; DEBUG
+        ; (loop for i from 1 to l1n ; DEBUG print dp and path
+        ;     do (loop for j from 1 to l2n
+        ;         do (cond
+        ;             ((= (aref path i j) 0)
+        ;                 (format t "↖"))
+        ;             ((= (aref path i j) 1)
+        ;                 (format t "←"))
+        ;             ((= (aref path i j) 2)
+        ;                 (format t "↑"))
+        ;         )
+        ;         do (format t "~a " (aref dp i j))
+        ;     )
+        ;     do (format t "~%")
         ; )
-        ; (format t "~%") ; DEBUG
+        ; (format t "~%")
         (let
             (
                 (lcslength (aref dp l1n l2n))
@@ -107,7 +104,6 @@
     (let
         (
             (l1n (- (length l1) 1))
-            (l2n (- (length l2) 1))
             (lcscurlen 0)
             (j 1)
             (l1pos (pop strpos))
@@ -124,7 +120,7 @@
                     (incf lcscurlen)
                     (incf j)
                 )
-                ((/= i (nth lcscurlen (car strpos)))
+                ((/= i (nth lcscurlen l1pos))
                     (format t "~C[31m-~a~%~C[00m" #\ESC (nth i l1) #\ESC)
                 )
             )
