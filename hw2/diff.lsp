@@ -1,4 +1,11 @@
 (defun read-file-to-list (filename)
+    ;; Open a file by the argument and read it line by line into a list
+    ;; whose first element is a nil. For example:
+    ;; File contents of file1.txt are following
+    ;; abc
+    ;; def
+    ;; When you call read-file-to-list with "./file1.txt" as the argument,
+    ;; it will return a list: (nil, "abc", "def").
     (let
         (
             (in (open filename :if-does-not-exist nil))
@@ -18,6 +25,8 @@
 )
 
 (defun lcs (l1 l2)
+    ;; Find out longest common subsequence from two lists l1 and l2
+    ;; and return these subsequence position of each lists.
     (let
         (
             (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
@@ -49,31 +58,33 @@
                 )
             )
         )
-        ; (loop for i from 1 to l1n ; DEBUG print dp and path
-        ;     do (loop for j from 1 to l2n
-        ;         do (cond
-        ;             ((= (aref path i j) 0)
-        ;                 (format t "↖"))
-        ;             ((= (aref path i j) 1)
-        ;                 (format t "←"))
-        ;             ((= (aref path i j) 2)
-        ;                 (format t "↑"))
-        ;         )
-        ;         do (format t "~a " (aref dp i j))
-        ;     )
-        ;     do (format t "~%")
-        ; )
-        ; (format t "~%")
+        #| ; DEBUG print dp and path
+        (loop for i from 1 to l1n
+            do (loop for j from 1 to l2n
+                do (cond
+                    ((= (aref path i j) 0)
+                        (format t "↖"))
+                    ((= (aref path i j) 1)
+                        (format t "←"))
+                    ((= (aref path i j) 2)
+                        (format t "↑"))
+                )
+                do (format t "~a " (aref dp i j))
+            )
+            do (format t "~%")
+        )
+        (format t "~%")
+        |# ;
         (let
             (
                 (lcslength (aref dp l1n l2n))
-                (i l1n) (j l2n) (commons nil)
+                (i l1n) (j l2n)
                 (l1pos nil) (l2pos nil)
             )
             (loop while (> lcslength 0)
+                ;; Go through the path reversely.
                 do (cond
                     ((= (aref path i j) 0)
-                        (push (nth i l1) commons)
                         (push i l1pos)
                         (push j l2pos)
                         (decf lcslength)
@@ -94,6 +105,8 @@
 )
 
 (defun printdiff (l1pos l2pos l1 l2)
+    ;; Print out the diff result by two lists l1 and l2 and two arrays l1pos
+    ;; and l2pos.
     (let
         (
             (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
@@ -105,7 +118,8 @@
                     (cond
                         ((= i (nth lcscurlen l1pos))
                             (loop while (< j (nth lcscurlen l2pos))
-                                do (format t "~C[32m+~a~%~C[00m" #\ESC (nth j l2) #\ESC)
+                                do (format t "~C[32m+~a~%~C[00m"
+                                    #\ESC (nth j l2) #\ESC)
                                 do (incf j)
                             )
                             (format t " ~a~%" (nth i l1))
@@ -113,7 +127,8 @@
                             (incf j)
                         )
                         ((/= i (nth lcscurlen l1pos))
-                            (format t "~C[31m-~a~%~C[00m" #\ESC (nth i l1) #\ESC)
+                            (format t "~C[31m-~a~%~C[00m"
+                            #\ESC (nth i l1) #\ESC)
                         )
                     )
                 )
@@ -135,6 +150,8 @@
 )
 
 (defun main ()
+    ;; In main function, get two lists from files and print diff result
+    ;; after finding their longest common subsequence.
     (let
         (
             (l1 (read-file-to-list "./file1.txt"))
