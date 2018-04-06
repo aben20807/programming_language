@@ -1,8 +1,3 @@
-(defvar *l1*)
-(defvar *l2*)
-(defvar dp)
-(defvar path)
-
 (defun read-file-to-list (filename)
     (let
         (
@@ -25,8 +20,8 @@
 (defun lcs (l1 l2)
     (let
         (
-            (l1n (- (length l1) 1))
-            (l2n (- (length l2) 1))
+            (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
+            (dp nil) (path nil)
         )
         (setq dp (make-array (list (+ l1n 1) (+ l2n 1)) :initial-element 0))
         (setq path (make-array (list (+ l1n 1) (+ l2n 1)) :initial-element 0))
@@ -73,7 +68,7 @@
             (
                 (lcslength (aref dp l1n l2n))
                 (i l1n) (j l2n) (commons nil)
-                (l1pos nil) (l2pos nil) (strpos nil)
+                (l1pos nil) (l2pos nil)
             )
             (loop while (> lcslength 0)
                 do (cond
@@ -93,9 +88,6 @@
                     )
                 )
             )
-            (push l2pos strpos)
-            (push l1pos strpos)
-            ; (return-from lcs strpos)
             (return-from lcs (values l1pos l2pos))
         )
     )
@@ -106,7 +98,6 @@
         (
             (l1n (- (length l1) 1)) (l2n (- (length l2) 1))
             (lcscurlen 0) (i 1) (j 1)
-            ; (l1pos (pop strpos)) (l2pos (car strpos))
         )
         (loop while (<= i l1n)
             do (cond
@@ -144,12 +135,16 @@
 )
 
 (defun main ()
-    (setq *l1* (read-file-to-list "./file1.txt"))
-    ; (dolist (i *l1*) (format t "~a~%" i)) ; DEBUG
-    (setq *l2* (read-file-to-list "./file2.txt"))
-    ; (dolist (i *l2*) (format t "~a~%" i)) ; DEBUG
-    (multiple-value-bind (l1pos l2pos) (lcs *l1* *l2*)
-        (printdiff l1pos l2pos *l1* *l2*)
+    (let
+        (
+            (l1 (read-file-to-list "./file1.txt"))
+            (l2 (read-file-to-list "./file2.txt"))
+        )
+        ; (dolist (i l1) (format t "~a~%" i)) ; DEBUG
+        ; (dolist (i l2) (format t "~a~%" i)) ; DEBUG
+        (multiple-value-bind (l1pos l2pos) (lcs l1 l2)
+            (printdiff l1pos l2pos l1 l2)
+        )
     )
 )
 
