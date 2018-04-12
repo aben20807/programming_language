@@ -1,7 +1,4 @@
-#include <iostream>
-using namespace std;
-
-int main() {
-    cout << "Hello World" << end;
-    return 0;
-}
+1
+4
+4
+5
