@@ -1,6 +1,5 @@
 echo $'1\n2\n3' > file1.txt
 echo $'1\n2\n3' > file2.txt
-diff file1.txt file2.txt
 sbcl --script diff.lsp
 echo -e ">1 2 3\n"
 
@@ -58,3 +57,13 @@ echo $'1\n2\n2\n3' > file1.txt
 echo $'1\n4\n4\n5' > file2.txt
 sbcl --script diff.lsp
 echo -e ">1 -2 -2 -3 +4 +4 +5\n"
+
+echo $'' > file1.txt
+echo $'1\n2\n3' > file2.txt
+sbcl --script diff.lsp
+echo -e ">- +1 +2 +3\n"
+
+echo $'1\n2\n3' > file1.txt
+echo $'' > file2.txt
+sbcl --script diff.lsp
+echo -e ">-1 -2 -3 +\n"
