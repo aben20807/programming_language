@@ -1,5 +1,11 @@
 # HW2
 
+## Usage
+
+```sh
+$ sbcl --script diff.lsp
+```
+
 ## Goal
 
 + Implement the `diff` command.
