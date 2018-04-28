@@ -19,24 +19,12 @@ goldbash(N, P1, P2) :-
     is_prime(P1),
     is_prime(P2).
 
-% search_goldbash(4, 1, 1) :-
-search_goldbash(4, 1) :-
-    write('2 2'), nl, main.
-% search_goldbash(N, P1, P2) :-
-%     p2loop(N, P1, P2).
-search_goldbash(N, P1) :-
-    P1n is P1 + 2,
-    P2 is N - P1n,
-    query_goldbash(N, P1n, P2).
-
-p2loop(N, P1, P2) :-
-    P2n is P2 + 2,
-    N >= P1 + P2n,
-    \+ p1loop(N, P1, P2n),
-    p2loop(N, P1, P2n).
-p1loop(N, P1, P2) :-
-    P1n is P1 + 2,
-    P1n =< P2,
+search_goldbash(4, 1) :-        % Special case.
+    write('2 2'), nl,
+    main.
+search_goldbash(N, P1) :-       % Faster than increasing both P1 and P2.
+    P1n is P1 + 2,              % P1 is count from 3.
+    P2 is N - P1n,              % P2 is N - P1.
     query_goldbash(N, P1n, P2).
 
 query_goldbash(N, P1, P2) :-
@@ -44,21 +32,19 @@ query_goldbash(N, P1, P2) :-
     write(P1),
     write(' '),
     write(P2), nl,
-    main.
+    main.                       % Go back to main and input next integer.
 query_goldbash(N, P1, P2) :-
     \+ goldbash(N, P1, P2),
-    search_goldbash(N, P1).
-    % p1loop(N, P1, P2).
+    search_goldbash(N, P1).     % Keep searching.
 
 main :-
     repeat,
     write('Input: '),
     flush_output,
-    read(X),
+    read(X),            % input need to use '.' to represent end of integer.
     write('Output: '),
     flush_output,
     search_goldbash(X, 1),
-    % search_goldbash(X, 1, 1),
     fail.
 
 :- initialization(main).
