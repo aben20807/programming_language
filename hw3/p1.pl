@@ -19,10 +19,15 @@ goldbash(N, P1, P2) :-
     is_prime(P1),
     is_prime(P2).
 
-search_goldbash(4, 1, 1) :-
-    write('2 2'), nl.
-search_goldbash(N, P1, P2) :-
-    p2loop(N, P1, P2).
+% search_goldbash(4, 1, 1) :-
+search_goldbash(4, 1) :-
+    write('2 2'), nl, main.
+% search_goldbash(N, P1, P2) :-
+%     p2loop(N, P1, P2).
+search_goldbash(N, P1) :-
+    P1n is P1 + 2,
+    P2 is N - P1n,
+    query_goldbash(N, P1n, P2).
 
 p2loop(N, P1, P2) :-
     P2n is P2 + 2,
@@ -42,7 +47,8 @@ query_goldbash(N, P1, P2) :-
     main.
 query_goldbash(N, P1, P2) :-
     \+ goldbash(N, P1, P2),
-    p1loop(N, P1, P2).
+    search_goldbash(N, P1).
+    % p1loop(N, P1, P2).
 
 main :-
     repeat,
@@ -51,7 +57,8 @@ main :-
     read(X),
     write('Output: '),
     flush_output,
-    search_goldbash(X, 1, 1),
+    search_goldbash(X, 1),
+    % search_goldbash(X, 1, 1),
     fail.
 
 :- initialization(main).
