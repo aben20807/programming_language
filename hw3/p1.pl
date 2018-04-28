@@ -28,21 +28,11 @@ p2loop(N, P1, P2) :-
     P2n is P2 + 2,
     N >= P1 + P2n,
     \+ p1loop(N, P1, P2n),
-    % N >= P1 + P2,
-    % \+ p1loop(N, P1, P2),
-    % P2n is P2 + 2,
-    % P1 is 1,
     p2loop(N, P1, P2n).
 p1loop(N, P1, P2) :-
-    % write(P1),
-    % write(' '),
-    % write(P2), nl,
     P1n is P1 + 2,
     P1n =< P2,
-    % P1 =< P2,
-    % N is P1 + P2,
     query_goldbash(N, P1n, P2).
-% p1loop(N, P1n, P2).
 
 query_goldbash(N, P1, P2) :-
     goldbash(N, P1, P2),
@@ -52,7 +42,6 @@ query_goldbash(N, P1, P2) :-
     main.
 query_goldbash(N, P1, P2) :-
     \+ goldbash(N, P1, P2),
-    % P1n is P1 + 2,
     p1loop(N, P1, P2).
 
 main :-
