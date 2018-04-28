@@ -2,7 +2,7 @@ input_relation(N) :-
     N > 0
     ->read(P),
         read(C),
-        assert(is_parent(P, C)),
+        assert(parent(P, C)),
         input_relation(N - 1)
     ;read(M),
         input_query(M).
@@ -11,14 +11,29 @@ input_query(M) :-
     M > 0
     ->read(A),
         read(B),
-        query_parent(A, B),
+        % query_parent(A, B),
+        lca(A, B, X),
+        write(X), nl,
         input_query(M - 1)
     ;main.
 
 query_parent(A, B) :-
-    is_parent(A, B)
+    parent(A, B)
     ->write('yes'), nl
     ;write('no'), nl.
+
+ancestor(A, B) :-
+    parent(A, B).
+ancestor(A, B) :-
+    parent(X, B),
+    ancestor(A, X).
+
+lca(A, B, X) :-
+    A == B -> X is A;
+    parent(A, B) -> X is A;
+    parent(B, A) -> X is B;
+    ancestor(X, A),
+    ancestor(X, B).
 
 main :-
     % trace,
