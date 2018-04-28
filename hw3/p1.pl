@@ -1,4 +1,3 @@
-% :- discontiguous is_prime/1.
 is_prime(2).
 is_prime(3).
 is_prime(P) :-
@@ -14,41 +13,36 @@ has_factor(N, F) :-
     Fnext is F + 2,
     has_factor(N, Fnext).
 
-query_prime(P) :-
-    is_prime(P), write('yes'), nl.
-query_prime(P) :-
-    \+ is_prime(P), write('no'), nl.
+goldbash(4, 2, 2).
+goldbash(N, P1, P2) :-
+    N is P1 + P2,
+    is_prime(P1),
+    is_prime(P2).
+
+search_goldbash(4, 1, 1) :-
+    write('2 2'), nl.
+search_goldbash(N, P1, P2) :-
+    p2loop(N, P1, P2).
 
 p2loop(N, P1, P2) :-
     P2n is P2 + 2,
     N >= P1 + P2n,
     \+ p1loop(N, P1, P2n),
+    % N >= P1 + P2,
+    % \+ p1loop(N, P1, P2),
+    % P2n is P2 + 2,
+    % P1 is 1,
     p2loop(N, P1, P2n).
 p1loop(N, P1, P2) :-
-    P1n is P1 + 2,
-    P1n =< P2,
-    N >= P1n + P2,
-    % write(P1n),
+    % write(P1),
     % write(' '),
     % write(P2), nl,
-    % goldbash(N, P1n, P2),
+    P1n is P1 + 2,
+    P1n =< P2,
+    % P1 =< P2,
+    % N is P1 + P2,
     query_goldbash(N, P1n, P2).
 % p1loop(N, P1n, P2).
-
-goldbash(4, 1, 1) :-
-    write('2 2'), nl.
-goldbash(N, P1, P2) :-
-    N is P1 + P2,
-    is_prime(P1),
-    is_prime(P2).
-    % write(P1),
-    % write(' '),
-    % write(P2), nl.
-goldbash(N, P1, P2) :-
-    p2loop(N, P1, P2).
-    % write(P1),
-    % write(' '),
-    % write(P2), nl.
 
 query_goldbash(N, P1, P2) :-
     goldbash(N, P1, P2),
@@ -58,6 +52,7 @@ query_goldbash(N, P1, P2) :-
     main.
 query_goldbash(N, P1, P2) :-
     \+ goldbash(N, P1, P2),
+    % P1n is P1 + 2,
     p1loop(N, P1, P2).
 
 main :-
@@ -67,8 +62,7 @@ main :-
     read(X),
     write('Output: '),
     flush_output,
-    goldbash(X, 1, 1),
-    flush_output,
+    search_goldbash(X, 1, 1),
     fail.
 
 :- initialization(main).
