@@ -28,23 +28,20 @@ search_goldbash(N, P1) :-       % Faster than increasing both P1 and P2.
     query_goldbash(N, P1n, P2).
 
 query_goldbash(N, P1, P2) :-
-    goldbash(N, P1, P2),
-    write(P1),
-    write(' '),
-    write(P2), nl,
-    main.                       % Go back to main and input next integer.
-query_goldbash(N, P1, P2) :-
-    \+ goldbash(N, P1, P2),
-    search_goldbash(N, P1).     % Keep searching.
+    goldbash(N, P1, P2)         % If is goldbash, then print answer
+    ->write(P1),
+        write(' '),
+        write(P2), nl,
+        main                    % Go back to main and input next integer.
+    ;search_goldbash(N, P1).    % Else keep searching.
 
 main :-
-    repeat,
+    % trace,                      % DEBUG
     write('Input: '),
     flush_output,
-    read(X),            % input need to use '.' to represent end of integer.
+    read(X),                    % use '.' to represent end of integer.
     write('Output: '),
     flush_output,
-    search_goldbash(X, 1),
-    fail.
+    search_goldbash(X, 1).
 
 :- initialization(main).
