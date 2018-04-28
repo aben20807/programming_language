@@ -20,34 +20,45 @@ query_prime(P) :-
     \+ is_prime(P), write('no'), nl.
 
 p2loop(N, P1, P2) :-
-    N >= P1 + P2,
     P2n is P2 + 2,
+    N >= P1 + P2n,
     \+ p1loop(N, P1, P2n),
     p2loop(N, P1, P2n).
 p1loop(N, P1, P2) :-
-    N >= P1 + P2,
     P1n is P1 + 2,
-    \+ goldbash(N, P1n, P2),
-    p1loop(N, P1n, P2).
+    P1n =< P2,
+    N >= P1n + P2,
+    % write(P1n),
+    % write(' '),
+    % write(P2), nl,
+    % goldbash(N, P1n, P2),
+    query_goldbash(N, P1n, P2).
+% p1loop(N, P1n, P2).
 
-goldbash(4, 2, 2).
+goldbash(4, 1, 1) :-
+    write('2 2'), nl.
 goldbash(N, P1, P2) :-
     N is P1 + P2,
     is_prime(P1),
-    is_prime(P2),
-    write(P1),
-    write(' '),
-    write(P2), nl.
+    is_prime(P2).
+    % write(P1),
+    % write(' '),
+    % write(P2), nl.
 goldbash(N, P1, P2) :-
-    p2loop(N, P1, P2),
-    write(P1),
-    write(' '),
-    write(P2), nl.
+    p2loop(N, P1, P2).
+    % write(P1),
+    % write(' '),
+    % write(P2), nl.
 
 query_goldbash(N, P1, P2) :-
-    goldbash(N, P1, P2), write('yes'), nl.
+    goldbash(N, P1, P2),
+    write(P1),
+    write(' '),
+    write(P2), nl,
+    main.
 query_goldbash(N, P1, P2) :-
-    \+ goldbash(N, P1, P2), write('no'), nl.
+    \+ goldbash(N, P1, P2),
+    p1loop(N, P1, P2).
 
 main :-
     repeat,
@@ -56,7 +67,6 @@ main :-
     read(X),
     write('Output: '),
     flush_output,
-    query_prime(X),
     goldbash(X, 1, 1),
     flush_output,
     fail.
