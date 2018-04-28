@@ -11,7 +11,6 @@ input_query(M) :-
     M > 0
     ->read(A),
         read(B),
-        % query_parent(A, B),
         lca(A, B, X),
         write(X), nl,
         input_query(M - 1)
@@ -36,7 +35,7 @@ lca(A, B, X) :-
     ancestor(X, B).
 
 main :-
-    % trace,
+    % trace,                % DEBUG
     read(N),
     input_relation(N - 1).
 
