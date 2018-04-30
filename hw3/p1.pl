@@ -39,7 +39,7 @@ main :-
     % trace,                      % DEBUG
     write('Input: '),
     flush_output,
-    read(X),                    % use '.' to represent end of integer.
+    readln([X|_]),
     write('Output: '),
     flush_output,
     search_goldbash(X, 1).
