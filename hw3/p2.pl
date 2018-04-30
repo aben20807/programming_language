@@ -27,12 +27,6 @@ ancestor(A, B) :-
     parent(X, B),
     ancestor(A, X).
 
-% lca(A, B, X) :-
-%     A == B -> X is A;
-%     parent(A, B) -> X is A;
-%     parent(B, A) -> X is B;
-%     ancestor(X, A),
-%     ancestor(X, B).
 lca(A, B, X) :-
     A == B, X is A.
 lca(A, B, X) :-
