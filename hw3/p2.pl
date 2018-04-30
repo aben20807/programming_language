@@ -1,16 +1,16 @@
 input_relation(N) :-
     N > 0
-    ->read(P),
-        read(C),
+    ->readln([P|Remain]),
+        nth0(0, Remain, C),
         assert(parent(P, C)),
         input_relation(N - 1)
-    ;read(M),
+    ;readln([M|_]),
         input_query(M).
 
 input_query(M) :-
     M > 0
-    ->read(A),
-        read(B),
+    ->readln([A|Remain]),
+        nth0(0, Remain, B),
         lca(A, B, X),
         write(X), nl,
         input_query(M - 1)
@@ -39,7 +39,8 @@ lca(A, B, X) :-
 
 main :-
     % trace,                % DEBUG
-    read(N),
+    % read(N),
+    readln([N|_]),
     input_relation(N - 1).
 
 :- initialization(main).
