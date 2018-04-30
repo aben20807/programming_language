@@ -1,17 +1,17 @@
 input_edge(N) :-
     N > 0
-    ->read(A),
-        read(B),
+    ->readln([A|Remain]),
+        nth0(0, Remain, B),
         assert(edge(A, B)), % Two direction.
         assert(edge(B, A)),
         input_edge(N - 1)
-    ;read(M),
+    ;readln([M|_]),
         input_query(M).
 
 input_query(M) :-
     M > 0
-    ->read(A),
-        read(B),
+    ->readln([A|Remain]),
+        nth0(0, Remain, B),
         reachable(A, B),
         input_query(M - 1)
     ;main.
@@ -33,9 +33,9 @@ walk(A, B, Path) :-
 
 main :-
     % trace,                % DEBUG
-    read(N),
+    readln([N|Remain]),
+    nth0(0, Remain, E),
     integer(N),
-    read(E),
     input_edge(E).
 
 :- initialization(main).
