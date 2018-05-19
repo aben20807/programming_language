@@ -22,7 +22,9 @@ impl M {
         let m2 = &m2.matrix;
         for (i, it) in m1.iter().enumerate() {
             for (j, it) in it.iter().enumerate() {
-                println!("({}, {}) {}", i, j, m1[i][j]);
+                for (k, it) in m2.iter().enumerate() {
+                    println!("{} {}", m1[i][j], m2[k][j]);
+                }
             }
         }
     }
@@ -39,6 +41,7 @@ impl fmt::Display for M {
             s.pop();
             s.push('\n');
         }
+        s.pop();
         write!(f, "{}", s)
     }
 }
