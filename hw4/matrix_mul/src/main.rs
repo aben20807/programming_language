@@ -10,6 +10,16 @@ impl M {
     fn new(r: i32, c: i32) -> M {
         M { matrix: vec![vec![0i32; c as usize]; r as usize] }
     }
+
+    fn mul(&self, m2: &M) {
+        let m1 = &self.matrix;
+        let m2 = &m2.matrix;
+        for (i, it) in m1.iter().enumerate() {
+            for (j, it) in it.iter().enumerate() {
+                println!("({}, {}) {}", i, j, m1[i][j]);
+            }
+        }
+    }
 }
 
 impl fmt::Display for M {
@@ -33,4 +43,7 @@ fn main() {
     scan!("{} {}", r, c);
     let m1 = M::new(r, c);
     println!("{}", m1);
+    let m2 = M::new(r, c);
+    println!("{}", m2);
+    m1.mul(&m2);
 }
