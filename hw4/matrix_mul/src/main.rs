@@ -3,12 +3,18 @@ extern crate text_io;
 use std::fmt;
 
 struct M {
+    row: i32,
+    col: i32,
     matrix: Vec<Vec<i32>>,
 }
 
 impl M {
     fn new(r: i32, c: i32) -> M {
-        M { matrix: vec![vec![0i32; c as usize]; r as usize] }
+        M {
+            row: r,
+            col: c,
+            matrix: vec![vec![0i32; c as usize]; r as usize],
+        }
     }
 
     fn mul(&self, m2: &M) {
