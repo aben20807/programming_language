@@ -6,6 +6,12 @@ struct M {
     matrix: Vec<Vec<i32>>,
 }
 
+impl M {
+    fn new(r: i32, c: i32) -> M {
+        M { matrix: vec![vec![0i32; c as usize]; r as usize] }
+    }
+}
+
 impl fmt::Display for M {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let mut s = String::new();
@@ -25,6 +31,6 @@ fn main() {
     let r: i32;
     let c: i32;
     scan!("{} {}", r, c);
-    let m1 = M { matrix: vec![vec![60i32; c as usize]; r as usize] };
+    let m1 = M::new(r, c);
     println!("{}", m1);
 }
