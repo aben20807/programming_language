@@ -50,7 +50,14 @@ fn main() {
     let r: i32;
     let c: i32;
     scan!("{} {}", r, c);
-    let m1 = M::new(r, c);
+    let mut m1 = M::new(r, c);
+    for i in 0..r as usize {
+        for j in 0..c as usize {
+            let e: i32;
+            scan!("{}", e);
+            m1.matrix[i][j] = e;
+        }
+    }
     println!("{}", m1);
     let m2 = M::new(r, c);
     println!("{}", m2);
