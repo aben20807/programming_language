@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate text_io;
 use std::fmt;
+use std::time::Instant;
 
 struct M {
     row: i32,
@@ -73,6 +74,8 @@ fn main() {
         m2 = M::new(r, c);
         m2.input();
     }
+    let start = Instant::now();
     let ma = m1.mul(&m2);
-    println!("{}", ma);
+    let duration = start.elapsed();
+    println!("{:?}\n{}", duration, ma);
 }
