@@ -17,16 +17,28 @@ impl M {
         }
     }
 
-    fn mul(&self, m2: &M) {
-        let m1 = &self.matrix;
-        let m2 = &m2.matrix;
-        for (i, it) in m1.iter().enumerate() {
-            for (j, it) in it.iter().enumerate() {
-                for (k, it) in m2.iter().enumerate() {
-                    println!("{} {}", m1[i][j], m2[k][j]);
+    fn input(&mut self) {
+        for i in 0..self.row as usize {
+            for j in 0..self.col as usize {
+                let e: i32;
+                scan!("{}", e);
+                self.matrix[i][j] = e;
+            }
+        }
+    }
+
+    fn mul(&self, m2: &M) -> M {
+        let mut ma = M::new(self.row, m2.col);
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        for i in 0..self.row as usize {
+            for j in 0..m2.col as usize {
+                for k in 0..self.col as usize {
+                    ma.matrix[i][j] += m1x[i][k] * m2x[k][j];
                 }
             }
         }
+        ma
     }
 }
 
@@ -47,19 +59,25 @@ impl fmt::Display for M {
 }
 
 fn main() {
-    let r: i32;
-    let c: i32;
-    scan!("{} {}", r, c);
-    let mut m1 = M::new(r, c);
-    for i in 0..r as usize {
-        for j in 0..c as usize {
-            let e: i32;
-            scan!("{}", e);
-            m1.matrix[i][j] = e;
-        }
+    let mut r: i32;
+    let mut c: i32;
+    let mut m1;
+    {
+        scan!("{} {}", r, c);
+        m1 = M::new(r, c);
     }
-    println!("{}", m1);
-    let m2 = M::new(r, c);
-    println!("{}", m2);
-    m1.mul(&m2);
+    println!("m1");
+    m1.input();
+    // println!("{}", m1);
+    let mut m2;
+    {
+        scan!("{} {}", r, c);
+        m2 = M::new(r, c);
+    }
+    println!("m2");
+    m2.input();
+    // println!("{}", m2);
+    let ma = m1.mul(&m2);
+    println!("{}", ma);
+
 }
