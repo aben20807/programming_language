@@ -65,19 +65,14 @@ fn main() {
     {
         scan!("{} {}", r, c);
         m1 = M::new(r, c);
+        m1.input();
     }
-    println!("m1");
-    m1.input();
-    // println!("{}", m1);
     let mut m2;
     {
         scan!("{} {}", r, c);
         m2 = M::new(r, c);
+        m2.input();
     }
-    println!("m2");
-    m2.input();
-    // println!("{}", m2);
     let ma = m1.mul(&m2);
     println!("{}", ma);
-
 }
