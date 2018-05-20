@@ -1,12 +1,9 @@
 #[macro_use]
 extern crate text_io;
 extern crate crossbeam;
-extern crate threadpool;
 use std::fmt;
-// use std::thread;
 use std::sync::{Arc, RwLock};
 use std::time::Instant;
-// use threadpool::ThreadPool;
 
 #[derive(Clone)]
 struct M {
@@ -47,30 +44,22 @@ impl M {
         }
         ma
     }
-
+    /*
     fn mul_t(&self, m2: &M) -> M {
-        let ma = M::new(self.row, m2.col);
-        let x = Arc::new(RwLock::new(ma));
+        let mut ma = M::new(self.row, m2.col);
         let m1x = &self.matrix;
         let m2x = &m2.matrix;
         crossbeam::scope(|scope| for i in 0..self.row as usize {
                              for j in 0..m2.col as usize {
-                                 let x1 = x.clone();
+                                 let mut xe = &mut ma.matrix[i][j];
                                  scope.spawn(move || for k in 0..self.col as usize {
-                                                 let tmp = m1x[i][k] * m2x[k][j];
-                                                 let mut x1 = x1.write().unwrap();
-                                                 x1.matrix[i][j] += tmp;
+                                                 *xe += m1x[i][k] * m2x[k][j];
                                              });
                              }
                          });
-        // for guard in guards {
-        //     guard.join().unwrap();
-        // }
-        let x1 = (*(x.read().unwrap())).clone();
-        // M::new(1, 1)
-        x1
+        ma
     }
-
+*/
     fn mul_rw(&self, m2: &M) -> M {
         let ma = M::new(self.row, m2.col);
         let x = Arc::new(RwLock::new(ma));
