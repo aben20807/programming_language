@@ -5,15 +5,16 @@ use std::io::prelude::*;
 
 fn main() {
     let mut n: usize;
-    for i in 1..31 {
+    for i in 1..2 {
         n = i * 10;
-        ow(n);
-        ow(n);
+        ow(n, n);
+        ow(n, n);
+        // ow(n, 0);
     }
 }
 
-fn ow(n: usize) {
-    let filename = format!("t{}.in", n);
+fn ow(filen: usize, n: usize) {
+    let filename = format!("t{}.in", filen);
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
