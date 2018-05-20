@@ -211,13 +211,13 @@ fn main() {
             m2 = M::new(r, c);
             m2.input();
         }
-        let print_result = true;
+        let print_result = false;
         {
             println!("single thread");
             let start = Instant::now();
             let _ma = m1.mul(&m2);
             let duration = start.elapsed();
-            println!("{:?}", duration);
+            println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
                 println!("{}", _ma);
             }
@@ -228,7 +228,7 @@ fn main() {
             let start = Instant::now();
             let _ma = m1.mul_cache(&m2);
             let duration = start.elapsed();
-            println!("{:?}", duration);
+            println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
                 println!("{}", _ma);
             }
@@ -238,7 +238,7 @@ fn main() {
             let start = Instant::now();
             let _ma = m1.mul_rw_e(&m2);
             let duration = start.elapsed();
-            println!("{:?}", duration);
+            println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
                 println!("{}", _ma);
             }
@@ -248,7 +248,7 @@ fn main() {
             let start = Instant::now();
             let _ma = m1.mul_rw(&m2);
             let duration = start.elapsed();
-            println!("{:?}", duration);
+            println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
                 println!("{}", _ma);
             }
@@ -258,7 +258,7 @@ fn main() {
             let start = Instant::now();
             let _ma = m1.mul_t(&m2);
             let duration = start.elapsed();
-            println!("{:?}", duration);
+            println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
                 println!("{}", _ma);
             }
@@ -269,7 +269,7 @@ fn main() {
             let start = Instant::now();
             let _ma = m1.mul_t_cache(&m2);
             let duration = start.elapsed();
-            println!("{:?}", duration);
+            println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
                 println!("{}", _ma);
             }
