@@ -90,22 +90,54 @@ impl M {
         let b12 = m2.sub([0, m2.row / 2, m2.col / 2, m2.col]);
         let b21 = m2.sub([m2.row / 2, m2.row, 0, m2.col / 2]);
         let b22 = m2.sub([m2.row / 2, m2.row, m2.col / 2, m2.col]);
-        let p1 = (&a11 + &a22).mul(&(&b11 + &b22));
-        let p2 = (&a21 + &a22).mul(&b11);
-        let p3 = (&a11).mul(&(&b12 - &b22));
-        let p4 = (&a22).mul(&(&b21 - &b11));
-        let p5 = (&a11 + &a12).mul(&b22);
-        let p6 = (&a21 - &a11).mul(&(&b11 + &b12));
-        let p7 = (&a12 - &a22).mul(&(&b21 + &b22));
+        let p1 = (&a11 + &a22).mul_t(&(&b11 + &b22));
+        let p2 = (&a21 + &a22).mul_t(&b11);
+        let p3 = (&a11).mul_t(&(&b12 - &b22));
+        let p4 = (&a22).mul_t(&(&b21 - &b11));
+        let p5 = (&a11 + &a12).mul_t(&b22);
+        let p6 = (&a21 - &a11).mul_t(&(&b11 + &b12));
+        let p7 = (&a12 - &a22).mul_t(&(&b21 + &b22));
         let c11 = &(&(&p1 + &p4) - &p5) + &p7;
         let c12 = &p3 + &p5;
         let c21 = &p2 + &p4;
         let c22 = &(&(&p1 + &p3) - &p2) + &p6;
         let mut ma = M::new(self.row, m2.col);
-        println!("{}", c11);
-        println!("{}", c12);
-        println!("{}", c21);
-        println!("{}", c22);
+        let mut mi = 0;
+        for i in 0..c11.row {
+            let mut mj = 0;
+            for j in 0..c11.col {
+                ma.matrix[mi][mj] = c11.matrix[i][j];
+                mj += 1;
+            }
+            mi += 1;
+        }
+        let mut mi = 0;
+        for i in 0..c12.row {
+            let mut mj = ma.col / 2;
+            for j in 0..c12.col {
+                ma.matrix[mi][mj] = c12.matrix[i][j];
+                mj += 1;
+            }
+            mi += 1;
+        }
+        let mut mi = ma.row / 2;
+        for i in 0..c21.row {
+            let mut mj = 0;
+            for j in 0..c21.col {
+                ma.matrix[mi][mj] = c21.matrix[i][j];
+                mj += 1;
+            }
+            mi += 1;
+        }
+        let mut mi = ma.row / 2;
+        for i in 0..c11.row {
+            let mut mj = ma.col / 2;
+            for j in 0..c11.col {
+                ma.matrix[mi][mj] = c22.matrix[i][j];
+                mj += 1;
+            }
+            mi += 1;
+        }
         ma
     }
 
@@ -281,7 +313,6 @@ fn main() {
             m2 = M::new(r, c);
             m2.input();
         }
-        m1.mul_s(&m2);
         let print_result = false;
         {
             println!("single thread");
@@ -339,6 +370,16 @@ fn main() {
             let m2 = m2.tr();
             let start = Instant::now();
             let _ma = m1.mul_t_cache(&m2);
+            let duration = start.elapsed();
+            println!("= {} ns", duration.subsec_nanos() as f64);
+            if print_result {
+                println!("{}", _ma);
+            }
+        }
+        {
+            println!("single thread");
+            let start = Instant::now();
+            let _ma = m1.mul_s(&m2);
             let duration = start.elapsed();
             println!("= {} ns", duration.subsec_nanos() as f64);
             if print_result {
