@@ -80,16 +80,24 @@ impl M {
     }
 
     fn mul_s(&self, m2: &M) -> M {
+        let a11 = self.sub([0, self.row / 2, 0, self.col / 2]);
+        let a12 = self.sub([0, self.row / 2, self.col / 2, self.row]);
+        let a21 = self.sub([self.row / 2, self.row, 0, self.col / 2]);
+        let a22 = self.sub([self.row / 2, self.row, self.col / 2, self.row]);
+        let b11 = m2.sub([0, m2.row / 2, 0, m2.col / 2]);
+        let b12 = m2.sub([0, m2.row / 2, m2.col / 2, m2.row]);
+        let b21 = m2.sub([m2.row / 2, m2.row, 0, m2.col / 2]);
+        let b22 = m2.sub([m2.row / 2, m2.row, m2.col / 2, m2.row]);
         let mut ma = M::new(self.row, m2.col);
-        let m1x = &self.matrix;
-        let m2x = &m2.matrix;
-        for i in 0..self.row {
-            for j in 0..m2.col {
-                for k in 0..self.col {
-                    ma.matrix[i][j] += m1x[i][k] * m2x[k][j];
-                }
-            }
-        }
+        // let m1x = &self.matrix;
+        // let m2x = &m2.matrix;
+        // for i in 0..self.row {
+        //     for j in 0..m2.col {
+        //         for k in 0..self.col {
+        //             ma.matrix[i][j] += m1x[i][k] * m2x[k][j];
+        //         }
+        //     }
+        // }
         ma
     }
 
@@ -226,8 +234,6 @@ fn main() {
             print!("{}x{}", r, c);
             m1 = M::new(r, c);
             m1.input();
-            let sub = m1.sub([3, 4, 5, 6]);
-            println!("{}", sub);
         }
         print!(" x ");
         let mut m2;
@@ -237,6 +243,7 @@ fn main() {
             m2 = M::new(r, c);
             m2.input();
         }
+        m1.mul_s(&m2);
         let print_result = false;
         {
             println!("single thread");
