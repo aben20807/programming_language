@@ -128,12 +128,15 @@ fn main() {
         let mut m1;
         {
             scan!("{} {}", r, c);
+            print!("{}x{}", r, c);
             m1 = M::new(r, c);
             m1.input();
         }
+        print!(" x ");
         let mut m2;
         {
             scan!("{} {}", r, c);
+            println!("{}x{}", r, c);
             m2 = M::new(r, c);
             m2.input();
         }
