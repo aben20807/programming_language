@@ -1,8 +1,14 @@
 #[macro_use]
 extern crate text_io;
+extern crate crossbeam;
+extern crate threadpool;
 use std::fmt;
+// use std::thread;
+use std::sync::{Arc, RwLock};
 use std::time::Instant;
+// use threadpool::ThreadPool;
 
+#[derive(Clone)]
 struct M {
     row: i32,
     col: i32,
@@ -41,6 +47,48 @@ impl M {
         }
         ma
     }
+
+    fn mul_t(&self, m2: &M) -> M {
+        let ma = M::new(self.row, m2.col);
+        let x = Arc::new(RwLock::new(ma));
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        crossbeam::scope(|scope| for i in 0..self.row as usize {
+                             for j in 0..m2.col as usize {
+                                 let x1 = x.clone();
+                                 scope.spawn(move || for k in 0..self.col as usize {
+                                                 let tmp = m1x[i][k] * m2x[k][j];
+                                                 let mut x1 = x1.write().unwrap();
+                                                 x1.matrix[i][j] += tmp;
+                                             });
+                             }
+                         });
+        // for guard in guards {
+        //     guard.join().unwrap();
+        // }
+        let x1 = (*(x.read().unwrap())).clone();
+        // M::new(1, 1)
+        x1
+    }
+
+    fn mul_rw(&self, m2: &M) -> M {
+        let ma = M::new(self.row, m2.col);
+        let x = Arc::new(RwLock::new(ma));
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        crossbeam::scope(|scope| for i in 0..self.row as usize {
+                             for j in 0..m2.col as usize {
+                                 let x1 = x.clone();
+                                 scope.spawn(move || for k in 0..self.col as usize {
+                                                 let tmp = m1x[i][k] * m2x[k][j];
+                                                 let mut x1 = x1.write().unwrap();
+                                                 x1.matrix[i][j] += tmp;
+                                             });
+                             }
+                         });
+        let x1 = (x.read().unwrap()).clone();
+        x1
+    }
 }
 
 impl fmt::Display for M {
@@ -60,22 +108,41 @@ impl fmt::Display for M {
 }
 
 fn main() {
-    let mut r: i32;
-    let mut c: i32;
-    let mut m1;
-    {
-        scan!("{} {}", r, c);
-        m1 = M::new(r, c);
-        m1.input();
+    // let array = [1, 2, 3];
+
+    // crossbeam::scope(|scope| for i in &array {
+    //                      scope.spawn(move || {
+    //                                      println!("element: {}", i);
+    //                                  });
+    //                  });
+    // let mut pool = ThreadPool::new(4);
+    // let mut vec = vec![0, 1, 2, 3, 4, 5, 6, 7];
+    // crossbeam::scope(|scope| for e in &mut vec {
+    //                      scope.spawn(move || { *e += 1; });
+    //                  });
+    // println!("{:?}", vec);
+    loop {
+        let mut r: i32;
+        let mut c: i32;
+        let mut m1;
+        {
+            scan!("{} {}", r, c);
+            m1 = M::new(r, c);
+            m1.input();
+        }
+        let mut m2;
+        {
+            scan!("{} {}", r, c);
+            m2 = M::new(r, c);
+            m2.input();
+        }
+        let start = Instant::now();
+        let ma = m1.mul(&m2);
+        let duration = start.elapsed();
+        println!("{:?}\n{}", duration, ma);
+        let start = Instant::now();
+        let ma = m1.mul_rw(&m2);
+        let duration = start.elapsed();
+        println!("{:?}\n{}", duration, ma);
     }
-    let mut m2;
-    {
-        scan!("{} {}", r, c);
-        m2 = M::new(r, c);
-        m2.input();
-    }
-    let start = Instant::now();
-    let ma = m1.mul(&m2);
-    let duration = start.elapsed();
-    println!("{:?}\n{}", duration, ma);
 }
