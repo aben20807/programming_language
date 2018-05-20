@@ -4,6 +4,8 @@ extern crate crossbeam;
 use std::fmt;
 use std::sync::{Arc, RwLock};
 use std::time::Instant;
+use std::ops::Add;
+use std::ops::Sub;
 
 #[derive(Clone)]
 struct M {
@@ -221,6 +223,36 @@ impl fmt::Display for M {
     }
 }
 
+impl<'a, 'b> Add<&'b M> for &'a M {
+    type Output = M;
+    fn add(self, m2: &'b M) -> M {
+        let mut ma = M::new(self.row, self.col);
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        for i in 0..self.row {
+            for j in 0..m2.col {
+                ma.matrix[i][j] = m1x[i][j] + m2x[i][j];
+            }
+        }
+        ma
+    }
+}
+
+impl<'a, 'b> Sub<&'b M> for &'a M {
+    type Output = M;
+    fn sub(self, m2: &'b M) -> M {
+        let mut ma = M::new(self.row, self.col);
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        for i in 0..self.row {
+            for j in 0..m2.col {
+                ma.matrix[i][j] = m1x[i][j] - m2x[i][j];
+            }
+        }
+        ma
+    }
+}
+
 fn main() {
     loop {
         let mut r: usize;
@@ -245,6 +277,7 @@ fn main() {
         }
         m1.mul_s(&m2);
         let print_result = false;
+        println!("{}", &m1 - &m2);
         {
             println!("single thread");
             let start = Instant::now();
