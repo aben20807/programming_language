@@ -83,23 +83,29 @@ impl M {
 
     fn mul_s(&self, m2: &M) -> M {
         let a11 = self.sub([0, self.row / 2, 0, self.col / 2]);
-        let a12 = self.sub([0, self.row / 2, self.col / 2, self.row]);
+        let a12 = self.sub([0, self.row / 2, self.col / 2, self.col]);
         let a21 = self.sub([self.row / 2, self.row, 0, self.col / 2]);
-        let a22 = self.sub([self.row / 2, self.row, self.col / 2, self.row]);
+        let a22 = self.sub([self.row / 2, self.row, self.col / 2, self.col]);
         let b11 = m2.sub([0, m2.row / 2, 0, m2.col / 2]);
-        let b12 = m2.sub([0, m2.row / 2, m2.col / 2, m2.row]);
+        let b12 = m2.sub([0, m2.row / 2, m2.col / 2, m2.col]);
         let b21 = m2.sub([m2.row / 2, m2.row, 0, m2.col / 2]);
-        let b22 = m2.sub([m2.row / 2, m2.row, m2.col / 2, m2.row]);
+        let b22 = m2.sub([m2.row / 2, m2.row, m2.col / 2, m2.col]);
+        let p1 = (&a11 + &a22).mul(&(&b11 + &b22));
+        let p2 = (&a21 + &a22).mul(&b11);
+        let p3 = (&a11).mul(&(&b12 - &b22));
+        let p4 = (&a22).mul(&(&b21 - &b11));
+        let p5 = (&a11 + &a12).mul(&b22);
+        let p6 = (&a21 - &a11).mul(&(&b11 + &b12));
+        let p7 = (&a12 - &a22).mul(&(&b21 + &b22));
+        let c11 = &(&(&p1 + &p4) - &p5) + &p7;
+        let c12 = &p3 + &p5;
+        let c21 = &p2 + &p4;
+        let c22 = &(&(&p1 + &p3) - &p2) + &p6;
         let mut ma = M::new(self.row, m2.col);
-        // let m1x = &self.matrix;
-        // let m2x = &m2.matrix;
-        // for i in 0..self.row {
-        //     for j in 0..m2.col {
-        //         for k in 0..self.col {
-        //             ma.matrix[i][j] += m1x[i][k] * m2x[k][j];
-        //         }
-        //     }
-        // }
+        println!("{}", c11);
+        println!("{}", c12);
+        println!("{}", c21);
+        println!("{}", c22);
         ma
     }
 
@@ -230,7 +236,7 @@ impl<'a, 'b> Add<&'b M> for &'a M {
         let m1x = &self.matrix;
         let m2x = &m2.matrix;
         for i in 0..self.row {
-            for j in 0..m2.col {
+            for j in 0..self.col {
                 ma.matrix[i][j] = m1x[i][j] + m2x[i][j];
             }
         }
@@ -245,7 +251,7 @@ impl<'a, 'b> Sub<&'b M> for &'a M {
         let m1x = &self.matrix;
         let m2x = &m2.matrix;
         for i in 0..self.row {
-            for j in 0..m2.col {
+            for j in 0..self.col {
                 ma.matrix[i][j] = m1x[i][j] - m2x[i][j];
             }
         }
@@ -277,7 +283,6 @@ fn main() {
         }
         m1.mul_s(&m2);
         let print_result = false;
-        println!("{}", &m1 - &m2);
         {
             println!("single thread");
             let start = Instant::now();
