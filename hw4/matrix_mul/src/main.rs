@@ -63,7 +63,7 @@ impl M {
                 scope.spawn(move || for i in (mid - mid)..(self.row - mid) {
                                 for j in 0..m2.col {
                                     for k in 0..self.col {
-                                        r[i][j] += m1x[i][k] * m2x[k][j];
+                                        r[i][j] += m1x[i + mid][k] * m2x[k][j];
                                     }
                                 }
                             });
@@ -72,7 +72,7 @@ impl M {
         ma
     }
 
-    fn mul_rw(&self, m2: &M) -> M {
+    fn mul_rw_e(&self, m2: &M) -> M {
         let ma = M::new(self.row, m2.col);
         let x = Arc::new(RwLock::new(ma));
         let m1x = &self.matrix;
@@ -87,6 +87,36 @@ impl M {
                                              });
                              }
                          });
+        let x1 = (x.read().unwrap()).clone();
+        x1
+    }
+
+    fn mul_rw(&self, m2: &M) -> M {
+        let mid = self.row / 2;
+        let ma = M::new(self.row, m2.col);
+        let x = Arc::new(RwLock::new(ma));
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        crossbeam::scope(|scope| {
+            let x1 = x.clone();
+            let x2 = x.clone();
+            scope.spawn(move || for i in 0..mid {
+                            for j in 0..m2.col {
+                                for k in 0..self.col {
+                                    let mut x1 = x1.write().unwrap();
+                                    x1.matrix[i][j] += m1x[i][k] * m2x[k][j];
+                                }
+                            }
+                        });
+            scope.spawn(move || for i in (mid - mid)..(self.row - mid) {
+                            for j in 0..m2.col {
+                                for k in 0..self.col {
+                                    let mut x2 = x2.write().unwrap();
+                                    x2.matrix[i + mid][j] += m1x[i + mid][k] * m2x[k][j];
+                                }
+                            }
+                        });
+        });
         let x1 = (x.read().unwrap()).clone();
         x1
     }
@@ -109,25 +139,15 @@ impl fmt::Display for M {
 }
 
 fn main() {
-    // let array = [1, 2, 3];
-
-    // crossbeam::scope(|scope| for i in &array {
-    //                      scope.spawn(move || {
-    //                                      println!("element: {}", i);
-    //                                  });
-    //                  });
-    // let mut pool = ThreadPool::new(4);
-    // let mut vec = vec![0, 1, 2, 3, 4, 5, 6, 7];
-    // crossbeam::scope(|scope| for e in &mut vec {
-    //                      scope.spawn(move || { *e += 1; });
-    //                  });
-    // println!("{:?}", vec);
     loop {
         let mut r: usize;
         let mut c: usize;
         let mut m1;
         {
             scan!("{} {}", r, c);
+            if r == 0 && c == 0 {
+                break;
+            }
             print!("{}x{}", r, c);
             m1 = M::new(r, c);
             m1.input();
@@ -140,17 +160,42 @@ fn main() {
             m2 = M::new(r, c);
             m2.input();
         }
+        let print_result = false;
+        println!("single thread");
         let start = Instant::now();
         let _ma = m1.mul(&m2);
         let duration = start.elapsed();
         println!("{:?}", duration);
+        if print_result {
+            println!("{}", _ma);
+        }
+
+        println!("rwlock many threads for every elements");
+        let start = Instant::now();
+        let _ma = m1.mul_rw_e(&m2);
+        let duration = start.elapsed();
+        println!("{:?}", duration);
+        if print_result {
+            println!("{}", _ma);
+        }
+
+        println!("rwlock two threads");
         let start = Instant::now();
         let _ma = m1.mul_rw(&m2);
         let duration = start.elapsed();
         println!("{:?}", duration);
+        if print_result {
+            println!("{}", _ma);
+        }
+
+        println!("split mut two threads");
         let start = Instant::now();
         let _ma = m1.mul_t(&m2);
         let duration = start.elapsed();
         println!("{:?}", duration);
+        if print_result {
+            println!("{}", _ma);
+        }
+        println!("");
     }
 }
