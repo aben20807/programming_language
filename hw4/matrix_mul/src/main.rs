@@ -41,6 +41,16 @@ impl M {
         ma
     }
 
+    fn sub(&self, [rb, re, cb, ce]: [usize; 4]) -> M {
+        let mut ma = M::new(re - rb, ce - cb);
+        for i in rb..re {
+            for j in cb..ce {
+                ma.matrix[i - rb][j - cb] = self.matrix[i][j];
+            }
+        }
+        ma
+    }
+
     fn mul(&self, m2: &M) -> M {
         let mut ma = M::new(self.row, m2.col);
         let m1x = &self.matrix;
@@ -63,6 +73,20 @@ impl M {
             for j in 0..m2.row {
                 for k in 0..self.col {
                     ma.matrix[i][j] += m1x[i][k] * m2x[j][k];
+                }
+            }
+        }
+        ma
+    }
+
+    fn mul_s(&self, m2: &M) -> M {
+        let mut ma = M::new(self.row, m2.col);
+        let m1x = &self.matrix;
+        let m2x = &m2.matrix;
+        for i in 0..self.row {
+            for j in 0..m2.col {
+                for k in 0..self.col {
+                    ma.matrix[i][j] += m1x[i][k] * m2x[k][j];
                 }
             }
         }
@@ -202,6 +226,8 @@ fn main() {
             print!("{}x{}", r, c);
             m1 = M::new(r, c);
             m1.input();
+            let sub = m1.sub([3, 4, 5, 6]);
+            println!("{}", sub);
         }
         print!(" x ");
         let mut m2;
