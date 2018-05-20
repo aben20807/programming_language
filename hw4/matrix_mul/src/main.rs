@@ -6,6 +6,8 @@ use std::sync::{Arc, RwLock};
 use std::time::Instant;
 use std::ops::Add;
 use std::ops::Sub;
+use std::fs::OpenOptions;
+use std::io::prelude::*;
 
 #[derive(Clone)]
 struct M {
@@ -14,6 +16,7 @@ struct M {
     matrix: Vec<Vec<i32>>,
 }
 
+#[allow(dead_code)]
 impl M {
     fn new(r: usize, c: usize) -> M {
         M {
@@ -291,101 +294,70 @@ impl<'a, 'b> Sub<&'b M> for &'a M {
     }
 }
 
-fn main() {
-    loop {
-        let mut r: usize;
-        let mut c: usize;
-        let mut m1;
-        {
-            scan!("{} {}", r, c);
-            if r == 0 && c == 0 {
-                break;
+fn test_mul(mul: &Fn(&M, &M) -> M, n: i32, m1: &M, m2: &M, filename: &str) {
+    let filename = format!("./test_output/{}.csv", filename);
+    let print_result = false;
+    let print_file = true;
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .append(true)
+        .open(filename)
+        .unwrap();
+    let mut n = n;
+    while n > 0 {
+        let start = Instant::now();
+        let _ma = mul(m1, m2);
+        let duration = start.elapsed();
+        if print_file {
+            if let Err(e) = write!(file, "{}, ", duration.subsec_nanos() as f64) {
+                eprintln!("Couldn't write to file: {}", e);
             }
-            print!("{}x{}", r, c);
-            m1 = M::new(r, c);
-            m1.input();
-        }
-        print!(" x ");
-        let mut m2;
-        {
-            scan!("{} {}", r, c);
-            println!("{}x{}", r, c);
-            m2 = M::new(r, c);
-            m2.input();
-        }
-        let print_result = false;
-        {
-            println!("single thread");
-            let start = Instant::now();
-            let _ma = m1.mul(&m2);
-            let duration = start.elapsed();
+        } else {
             println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
         }
-        {
-            println!("single thread cache");
-            let m2 = m2.tr();
-            let start = Instant::now();
-            let _ma = m1.mul_cache(&m2);
-            let duration = start.elapsed();
-            println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
+        if print_result {
+            println!("{}", _ma);
         }
-        {
-            println!("rwlock many threads for every elements");
-            let start = Instant::now();
-            let _ma = m1.mul_rw_e(&m2);
-            let duration = start.elapsed();
-            println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
-        }
-        {
-            println!("rwlock two threads");
-            let start = Instant::now();
-            let _ma = m1.mul_rw(&m2);
-            let duration = start.elapsed();
-            println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
-        }
-        {
-            println!("split mut two threads");
-            let start = Instant::now();
-            let _ma = m1.mul_t(&m2);
-            let duration = start.elapsed();
-            println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
-        }
-        {
-            println!("split mut two threads cache");
-            let m2 = m2.tr();
-            let start = Instant::now();
-            let _ma = m1.mul_t_cache(&m2);
-            let duration = start.elapsed();
-            println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
-        }
-        {
-            println!("single thread");
-            let start = Instant::now();
-            let _ma = m1.mul_s(&m2);
-            let duration = start.elapsed();
-            println!("= {} ns", duration.subsec_nanos() as f64);
-            if print_result {
-                println!("{}", _ma);
-            }
-        }
-        println!("");
+        n -= 1;
     }
+    if print_file {
+        if let Err(e) = writeln!(file, "") {
+            eprintln!("Couldn't write to file: {}", e);
+        }
+    }
+}
+
+fn main() {
+    // loop {
+    let mut r: usize;
+    let mut c: usize;
+    let mut m1;
+    {
+        scan!("{} {}", r, c);
+        // if r == 0 && c == 0 {
+        //     break;
+        // }
+        print!("{}x{}", r, c);
+        m1 = M::new(r, c);
+        m1.input();
+    }
+    print!(" x ");
+    let mut m2;
+    {
+        scan!("{} {}", r, c);
+        println!("{}x{}", r, c);
+        m2 = M::new(r, c);
+        m2.input();
+    }
+    {
+        // test_mul(&M::mul, 100, &m1, &m2, "m1");
+        // test_mul(&M::mul_cache, 100, &m1, &m2, "m2");
+        // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3");
+        // test_mul(&M::mul_rw, 100, &m1, &m2, "m4");
+        // test_mul(&M::mul_t, 100, &m1, &m2, "m5");
+        // test_mul(&M::mul_t_cache, 100, &m1, &m2, "m6");
+        test_mul(&M::mul_s, 100, &m1, &m2, "m7");
+    }
+    // }
 }
