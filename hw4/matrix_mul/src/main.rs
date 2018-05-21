@@ -144,7 +144,7 @@ impl M {
         ma
     }
 
-    fn mul_s_t(&self, m2: &M) -> M {
+    fn mul_s_2t(&self, m2: &M) -> M {
         let a11 = self.sub([0, self.row / 2, 0, self.col / 2]);
         let a12 = self.sub([0, self.row / 2, self.col / 2, self.col]);
         let a21 = self.sub([self.row / 2, self.row, 0, self.col / 2]);
@@ -204,7 +204,7 @@ impl M {
         ma
     }
 
-    fn mul_t(&self, m2: &M) -> M {
+    fn mul_2t(&self, m2: &M) -> M {
         let mut ma = M::new(self.row, m2.col);
         {
             let mid = self.row / 2;
@@ -231,7 +231,7 @@ impl M {
         ma
     }
 
-    fn mul_t_cache(&self, m2: &M) -> M {
+    fn mul_2t_cache(&self, m2: &M) -> M {
         let mut ma = M::new(self.row, m2.row);
         {
             let mid = self.row / 2;
@@ -415,10 +415,10 @@ fn main() {
         // test_mul(&M::mul_cache, 100, &m1, &m2, "m2");
         // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3");
         // test_mul(&M::mul_rw, 100, &m1, &m2, "m4");
-        // test_mul(&M::mul_t, 100, &m1, &m2, "m5");
-        // test_mul(&M::mul_t_cache, 100, &m1, &m2, "m6");
+        // test_mul(&M::mul_2t, 100, &m1, &m2, "m5");
+        // test_mul(&M::mul_2t_cache, 100, &m1, &m2, "m6");
         // test_mul(&M::mul_s, 100, &m1, &m2, "m7");
-        // test_mul(&M::mul_s_t, 100, &m1, &m2, "m8");
+        // test_mul(&M::mul_s_2t, 100, &m1, &m2, "m8");
     }
     // }
 }
