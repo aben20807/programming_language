@@ -323,6 +323,52 @@ impl M {
         ma
     }
 
+    fn mul_4t_cache(&self, m2: &M) -> M {
+        let mut ma = M::new(self.row, m2.row);
+        {
+            let mid = self.row / 2;
+            let (u, d) = ma.matrix.split_at_mut(mid);
+            {
+                let midd = mid / 2;
+                let (u1, u2) = u.split_at_mut(midd);
+                let (d1, d2) = d.split_at_mut(midd);
+                let m1x = &self.matrix;
+                let m2x = &m2.matrix_tr;
+                crossbeam::scope(|scope| {
+                    scope.spawn(move || for i in 0..midd {
+                                    for j in 0..m2.row {
+                                        for k in 0..self.col {
+                                            u1[i][j] += m1x[i][k] * m2x[j][k];
+                                        }
+                                    }
+                                });
+                    scope.spawn(move || for i in 0..(mid - midd) {
+                                    for j in 0..m2.row {
+                                        for k in 0..self.col {
+                                            u2[i][j] += m1x[i + midd][k] * m2x[j][k];
+                                        }
+                                    }
+                                });
+                    scope.spawn(move || for i in 0..midd {
+                                    for j in 0..m2.row {
+                                        for k in 0..self.col {
+                                            d1[i][j] += m1x[i + mid][k] * m2x[j][k];
+                                        }
+                                    }
+                                });
+                    scope.spawn(move || for i in 0..(mid - midd) {
+                                    for j in 0..m2.row {
+                                        for k in 0..self.col {
+                                            d2[i][j] += m1x[i + mid + midd][k] * m2x[j][k];
+                                        }
+                                    }
+                                });
+                });
+            }
+        }
+        ma
+    }
+
     fn mul_rw_e(&self, m2: &M) -> M {
         let ma = M::new(self.row, m2.col);
         let x = Arc::new(RwLock::new(ma));
@@ -521,6 +567,8 @@ fn main() {
         // println!("{}\n", ma);
         // let ma = m1.mul_s_2t_split(&m2);
         // println!("{}\n", ma);
+        // let ma = m1.mul_4t_cache(&m2);
+        // println!("{}\n", ma);
         // test_mul(&M::mul, 100, &m1, &m2, "m1");
         // test_mul(&M::mul_cache, 100, &m1, &m2, "m2");
         // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3");
@@ -529,7 +577,8 @@ fn main() {
         // test_mul(&M::mul_2t_cache, 100, &m1, &m2, "m6");
         // test_mul(&M::mul_s, 100, &m1, &m2, "m7");
         // test_mul(&M::mul_s_2t, 100, &m1, &m2, "m8");
-        test_mul(&M::mul_s_2t_split, 100, &m1, &m2, "m9");
+        // test_mul(&M::mul_s_2t_split, 100, &m1, &m2, "m9");
+        test_mul(&M::mul_4t_cache, 100, &m1, &m2, "m10");
     }
     // }
 }
