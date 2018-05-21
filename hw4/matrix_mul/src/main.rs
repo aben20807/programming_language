@@ -15,6 +15,11 @@ struct M {
     col: usize,
     matrix: Vec<Vec<i32>>,
     matrix_tr: Vec<Vec<i32>>,
+    print_split: bool,
+    m11: Vec<Vec<i32>>,
+    m12: Vec<Vec<i32>>,
+    m21: Vec<Vec<i32>>,
+    m22: Vec<Vec<i32>>,
 }
 
 #[allow(dead_code)]
@@ -25,6 +30,11 @@ impl M {
             col: c,
             matrix: vec![vec![0i32; c]; r],
             matrix_tr: vec![vec![0i32; c]; r],
+            print_split: false,
+            m11: vec![vec![0i32; c/2]; r/2],
+            m12: vec![vec![0i32; c/2]; r/2],
+            m21: vec![vec![0i32; c/2]; r/2],
+            m22: vec![vec![0i32; c/2]; r/2],
         }
     }
 
@@ -35,6 +45,19 @@ impl M {
                 scan!("{}", e);
                 self.matrix[i][j] = e;
                 self.matrix_tr[j][i] = e;
+                if i < self.row / 2 {
+                    if j < self.col / 2 {
+                        self.m11[i][j] = e;
+                    } else {
+                        self.m12[i][j - self.col / 2] = e;
+                    }
+                } else {
+                    if j < self.col / 2 {
+                        self.m21[i - self.row / 2][j] = e;
+                    } else {
+                        self.m22[i - self.row / 2][j - self.col / 2] = e;
+                    }
+                }
             }
         }
     }
@@ -314,15 +337,42 @@ impl M {
 impl fmt::Display for M {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let mut s = String::new();
-        for it in &self.matrix {
-            for itt in it {
-                s.push_str(&itt.to_string());
-                s.push(' ');
+        if self.print_split {
+            for i in 0..self.row {
+                for j in 0..self.col {
+                    if i < self.row / 2 {
+                        if j < self.col / 2 {
+                            s.push_str(&self.m11[i][j].to_string());
+                            s.push(' ');
+                        } else {
+                            s.push_str(&self.m12[i][j - self.col / 2].to_string());
+                            s.push(' ');
+                        }
+                    } else {
+                        if j < self.col / 2 {
+                            s.push_str(&self.m21[i - self.row / 2][j].to_string());
+                            s.push(' ');
+                        } else {
+                            s.push_str(&self.m22[i - self.row / 2][j - self.col / 2].to_string());
+                            s.push(' ');
+                        }
+                    }
+                }
+                s.pop();
+                s.push('\n');
             }
             s.pop();
-            s.push('\n');
+        } else {
+            for it in &self.matrix {
+                for itt in it {
+                    s.push_str(&itt.to_string());
+                    s.push(' ');
+                }
+                s.pop();
+                s.push('\n');
+            }
+            s.pop();
         }
-        s.pop();
         write!(f, "{}", s)
     }
 }
@@ -414,6 +464,26 @@ fn main() {
         m2.input();
     }
     {
+        println!("{}", m1);
+        m1.print_split = true;
+        println!("{}", m1);
+
+        let ma = m1.mul(&m2);
+        println!("{}\n", ma);
+        // let ma = m1.mul_cache(&m2);
+        // println!("{}\n", ma);
+        // let ma = m1.mul_rw_e(&m2);
+        // println!("{}\n", ma);
+        // let ma = m1.mul_rw(&m2);
+        // println!("{}\n", ma);
+        // let ma = m1.mul_2t(&m2);
+        // println!("{}\n", ma);
+        // let ma = m1.mul_2t_cache(&m2);
+        // println!("{}\n", ma);
+        // let ma = m1.mul_s(&m2);
+        // println!("{}\n", ma);
+        // let ma = m1.mul_s_2t(&m2);
+        // println!("{}\n", ma);
         // test_mul(&M::mul, 100, &m1, &m2, "m1");
         // test_mul(&M::mul_cache, 100, &m1, &m2, "m2");
         // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3");
