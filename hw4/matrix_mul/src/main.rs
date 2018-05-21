@@ -38,6 +38,20 @@ impl M {
         }
     }
 
+    fn from(m: &Vec<Vec<i32>>, r: usize, c: usize) -> M {
+        M {
+            row: r,
+            col: c,
+            matrix: (*m).clone(),
+            matrix_tr: vec![vec![0i32; c]; r],
+            print_split: false,
+            m11: vec![vec![0i32; c/2]; r/2],
+            m12: vec![vec![0i32; c/2]; r/2],
+            m21: vec![vec![0i32; c/2]; r/2],
+            m22: vec![vec![0i32; c/2]; r/2],
+        }
+    }
+
     fn input(&mut self) {
         for i in 0..self.row {
             for j in 0..self.col {
@@ -227,6 +241,31 @@ impl M {
             }
             mi += 1;
         }
+        ma
+    }
+
+    fn mul_s_2t_split(&self, m2: &M) -> M {
+        let a11 = M::from(&self.m11, self.row / 2, self.col / 2);
+        let a12 = M::from(&self.m12, self.row / 2, self.col / 2);
+        let a21 = M::from(&self.m21, self.row / 2, self.col / 2);
+        let a22 = M::from(&self.m22, self.row / 2, self.col / 2);
+        let b11 = M::from(&m2.m11, m2.row / 2, m2.col / 2);
+        let b12 = M::from(&m2.m12, m2.row / 2, m2.col / 2);
+        let b21 = M::from(&m2.m21, m2.row / 2, m2.col / 2);
+        let b22 = M::from(&m2.m22, m2.row / 2, m2.col / 2);
+        let p1 = (&a11 + &a22).mul_2t(&(&b11 + &b22));
+        let p2 = (&a21 + &a22).mul_2t(&b11);
+        let p3 = (&a11).mul_2t(&(&b12 - &b22));
+        let p4 = (&a22).mul_2t(&(&b21 - &b11));
+        let p5 = (&a11 + &a12).mul_2t(&b22);
+        let p6 = (&a21 - &a11).mul_2t(&(&b11 + &b12));
+        let p7 = (&a12 - &a22).mul_2t(&(&b21 + &b22));
+        let mut ma = M::new(self.row, m2.col);
+        ma.print_split = true;
+        ma.m11 = (&(&(&p1 + &p4) - &p5) + &p7).matrix;
+        ma.m12 = (&p3 + &p5).matrix;
+        ma.m21 = (&p2 + &p4).matrix;
+        ma.m22 = (&(&(&p1 + &p3) - &p2) + &p6).matrix;
         ma
     }
 
@@ -464,12 +503,8 @@ fn main() {
         m2.input();
     }
     {
-        println!("{}", m1);
-        m1.print_split = true;
-        println!("{}", m1);
-
-        let ma = m1.mul(&m2);
-        println!("{}\n", ma);
+        // let ma = m1.mul(&m2);
+        // println!("{}\n", ma);
         // let ma = m1.mul_cache(&m2);
         // println!("{}\n", ma);
         // let ma = m1.mul_rw_e(&m2);
@@ -484,6 +519,8 @@ fn main() {
         // println!("{}\n", ma);
         // let ma = m1.mul_s_2t(&m2);
         // println!("{}\n", ma);
+        // let ma = m1.mul_s_2t_split(&m2);
+        // println!("{}\n", ma);
         // test_mul(&M::mul, 100, &m1, &m2, "m1");
         // test_mul(&M::mul_cache, 100, &m1, &m2, "m2");
         // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3");
@@ -492,6 +529,7 @@ fn main() {
         // test_mul(&M::mul_2t_cache, 100, &m1, &m2, "m6");
         // test_mul(&M::mul_s, 100, &m1, &m2, "m7");
         // test_mul(&M::mul_s_2t, 100, &m1, &m2, "m8");
+        test_mul(&M::mul_s_2t_split, 100, &m1, &m2, "m9");
     }
     // }
 }
