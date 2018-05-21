@@ -14,6 +14,7 @@ struct M {
     row: usize,
     col: usize,
     matrix: Vec<Vec<i32>>,
+    matrix_tr: Vec<Vec<i32>>,
 }
 
 #[allow(dead_code)]
@@ -23,6 +24,7 @@ impl M {
             row: r,
             col: c,
             matrix: vec![vec![0i32; c]; r],
+            matrix_tr: vec![vec![0i32; c]; r],
         }
     }
 
@@ -32,6 +34,7 @@ impl M {
                 let e: i32;
                 scan!("{}", e);
                 self.matrix[i][j] = e;
+                self.matrix_tr[j][i] = e;
             }
         }
     }
@@ -73,7 +76,7 @@ impl M {
     fn mul_cache(&self, m2: &M) -> M {
         let mut ma = M::new(self.row, m2.row);
         let m1x = &(self.matrix);
-        let m2x = &(m2.matrix);
+        let m2x = &(m2.matrix_tr);
         for i in 0..self.row {
             for j in 0..m2.row {
                 for k in 0..self.col {
@@ -153,13 +156,13 @@ impl M {
         let b12 = m2.sub([0, m2.row / 2, m2.col / 2, m2.col]);
         let b21 = m2.sub([m2.row / 2, m2.row, 0, m2.col / 2]);
         let b22 = m2.sub([m2.row / 2, m2.row, m2.col / 2, m2.col]);
-        let p1 = (&a11 + &a22).mul_t(&(&b11 + &b22));
-        let p2 = (&a21 + &a22).mul_t(&b11);
-        let p3 = (&a11).mul_t(&(&b12 - &b22));
-        let p4 = (&a22).mul_t(&(&b21 - &b11));
-        let p5 = (&a11 + &a12).mul_t(&b22);
-        let p6 = (&a21 - &a11).mul_t(&(&b11 + &b12));
-        let p7 = (&a12 - &a22).mul_t(&(&b21 + &b22));
+        let p1 = (&a11 + &a22).mul_2t(&(&b11 + &b22));
+        let p2 = (&a21 + &a22).mul_2t(&b11);
+        let p3 = (&a11).mul_2t(&(&b12 - &b22));
+        let p4 = (&a22).mul_2t(&(&b21 - &b11));
+        let p5 = (&a11 + &a12).mul_2t(&b22);
+        let p6 = (&a21 - &a11).mul_2t(&(&b11 + &b12));
+        let p7 = (&a12 - &a22).mul_2t(&(&b21 + &b22));
         let c11 = &(&(&p1 + &p4) - &p5) + &p7;
         let c12 = &p3 + &p5;
         let c21 = &p2 + &p4;
@@ -237,7 +240,7 @@ impl M {
             let mid = self.row / 2;
             let (l, r) = ma.matrix.split_at_mut(mid);
             let m1x = &self.matrix;
-            let m2x = &m2.matrix;
+            let m2x = &m2.matrix_tr;
             crossbeam::scope(|scope| {
                 scope.spawn(move || for i in 0..mid {
                                 for j in 0..m2.row {
