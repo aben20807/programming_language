@@ -269,6 +269,31 @@ impl M {
         ma
     }
 
+    fn mul_s_4t_split(&self, m2: &M) -> M {
+        let a11 = M::from(&self.m11, self.row / 2, self.col / 2);
+        let a12 = M::from(&self.m12, self.row / 2, self.col / 2);
+        let a21 = M::from(&self.m21, self.row / 2, self.col / 2);
+        let a22 = M::from(&self.m22, self.row / 2, self.col / 2);
+        let b11 = M::from(&m2.m11, m2.row / 2, m2.col / 2);
+        let b12 = M::from(&m2.m12, m2.row / 2, m2.col / 2);
+        let b21 = M::from(&m2.m21, m2.row / 2, m2.col / 2);
+        let b22 = M::from(&m2.m22, m2.row / 2, m2.col / 2);
+        let p1 = (&a11 + &a22).mul_4t(&(&b11 + &b22));
+        let p2 = (&a21 + &a22).mul_4t(&b11);
+        let p3 = (&a11).mul_4t(&(&b12 - &b22));
+        let p4 = (&a22).mul_4t(&(&b21 - &b11));
+        let p5 = (&a11 + &a12).mul_4t(&b22);
+        let p6 = (&a21 - &a11).mul_4t(&(&b11 + &b12));
+        let p7 = (&a12 - &a22).mul_4t(&(&b21 + &b22));
+        let mut ma = M::new(self.row, m2.col);
+        ma.print_split = true;
+        ma.m11 = (&(&(&p1 + &p4) - &p5) + &p7).matrix;
+        ma.m12 = (&p3 + &p5).matrix;
+        ma.m21 = (&p2 + &p4).matrix;
+        ma.m22 = (&(&(&p1 + &p3) - &p2) + &p6).matrix;
+        ma
+    }
+
     fn mul_2t(&self, m2: &M) -> M {
         let mut ma = M::new(self.row, m2.col);
         {
@@ -323,6 +348,52 @@ impl M {
         ma
     }
 
+    fn mul_4t(&self, m2: &M) -> M {
+        let mut ma = M::new(self.row, m2.row);
+        {
+            let mid = self.row / 2;
+            let (u, d) = ma.matrix.split_at_mut(mid);
+            {
+                let midd = mid / 2;
+                let (u1, u2) = u.split_at_mut(midd);
+                let (d1, d2) = d.split_at_mut(midd);
+                let m1x = &self.matrix;
+                let m2x = &m2.matrix;
+                crossbeam::scope(|scope| {
+                    scope.spawn(move || for i in 0..midd {
+                                    for j in 0..m2.col {
+                                        for k in 0..self.col {
+                                            u1[i][j] += m1x[i][k] * m2x[k][j];
+                                        }
+                                    }
+                                });
+                    scope.spawn(move || for i in 0..(mid - midd) {
+                                    for j in 0..m2.col {
+                                        for k in 0..self.col {
+                                            u2[i][j] += m1x[i + midd][k] * m2x[k][j];
+                                        }
+                                    }
+                                });
+                    scope.spawn(move || for i in 0..midd {
+                                    for j in 0..m2.col {
+                                        for k in 0..self.col {
+                                            d1[i][j] += m1x[i + mid][k] * m2x[k][j];
+                                        }
+                                    }
+                                });
+                    scope.spawn(move || for i in 0..(self.row - mid - midd) {
+                                    for j in 0..m2.col {
+                                        for k in 0..self.col {
+                                            d2[i][j] += m1x[i + mid + midd][k] * m2x[k][j];
+                                        }
+                                    }
+                                });
+                });
+            }
+        }
+        ma
+    }
+
     fn mul_4t_cache(&self, m2: &M) -> M {
         let mut ma = M::new(self.row, m2.row);
         {
@@ -356,7 +427,7 @@ impl M {
                                         }
                                     }
                                 });
-                    scope.spawn(move || for i in 0..(mid - midd) {
+                    scope.spawn(move || for i in 0..(self.row - mid - midd) {
                                     for j in 0..m2.row {
                                         for k in 0..self.col {
                                             d2[i][j] += m1x[i + mid + midd][k] * m2x[j][k];
@@ -569,6 +640,8 @@ fn main() {
         // println!("{}\n", ma);
         // let ma = m1.mul_4t_cache(&m2);
         // println!("{}\n", ma);
+        // let ma = m1.mul_s_4t_split(&m2);
+        // println!("{}\n", ma);
         // test_mul(&M::mul, 100, &m1, &m2, "m1");
         // test_mul(&M::mul_cache, 100, &m1, &m2, "m2");
         // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3");
@@ -578,7 +651,9 @@ fn main() {
         // test_mul(&M::mul_s, 100, &m1, &m2, "m7");
         // test_mul(&M::mul_s_2t, 100, &m1, &m2, "m8");
         // test_mul(&M::mul_s_2t_split, 100, &m1, &m2, "m9");
-        test_mul(&M::mul_4t_cache, 100, &m1, &m2, "m10");
+        // test_mul(&M::mul_4t_cache, 100, &m1, &m2, "m10");
+        // test_mul(&M::mul_s_4t_split, 100, &m1, &m2, "m11");
+        test_mul(&M::mul_4t, 100, &m1, &m2, "m12");
     }
     // }
 }
