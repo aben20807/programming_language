@@ -631,8 +631,8 @@ fn main() {
     } else if mode == "analysis" {
         test_mul(&M::mul, 100, &m1, &m2, "m1", false); // A
         test_mul(&M::mul_cache, 100, &m1, &m2, "m2", false); // B
-        test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3", false); // C
-        test_mul(&M::mul_rw, 100, &m1, &m2, "m4", false); // D
+        // test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3", false); // C // too slow
+        // test_mul(&M::mul_rw, 100, &m1, &m2, "m4", false); // D // too slow
         test_mul(&M::mul_2t, 100, &m1, &m2, "m5", false); // E
         test_mul(&M::mul_2t_cache, 100, &m1, &m2, "m6", false); // F
         test_mul(&M::mul_s, 100, &m1, &m2, "m7", false); // G
