@@ -8,6 +8,7 @@ use std::ops::Add;
 use std::ops::Sub;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
+use std::env;
 
 #[derive(Clone)]
 struct M {
@@ -595,6 +596,8 @@ fn test_mul(mul: &Fn(&M, &M) -> M, n: i32, m1: &M, m2: &M, filename: &str, print
 }
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    let mode = &args[1];
     let mut r: usize;
     let mut c: usize;
     let mut m1;
@@ -612,21 +615,7 @@ fn main() {
         m2 = M::new(r, c);
         m2.input();
     }
-    {
-        /*
-        test_mul(&M::mul, 100, &m1, &m2, "m1", false); // A
-        test_mul(&M::mul_cache, 100, &m1, &m2, "m2", false); // B
-        test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3", false); // C
-        test_mul(&M::mul_rw, 100, &m1, &m2, "m4", false); // D
-        test_mul(&M::mul_2t, 100, &m1, &m2, "m5", false); // E
-        test_mul(&M::mul_2t_cache, 100, &m1, &m2, "m6", false); // F
-        test_mul(&M::mul_s, 100, &m1, &m2, "m7", false); // G
-        test_mul(&M::mul_s_2t, 100, &m1, &m2, "m8", false); // H
-        test_mul(&M::mul_s_2t_split, 100, &m1, &m2, "m9", false); // I
-        test_mul(&M::mul_4t_cache, 100, &m1, &m2, "m10", false); // J
-        test_mul(&M::mul_s_4t_split, 100, &m1, &m2, "m11", false); // K
-        test_mul(&M::mul_4t, 100, &m1, &m2, "m12", false); // L
-*/
+    if mode == "answer" {
         test_mul(&M::mul, 1, &m1, &m2, "m1", true); // A
         test_mul(&M::mul_cache, 1, &m1, &m2, "m2", true); // B
         test_mul(&M::mul_rw_e, 1, &m1, &m2, "m3", true); // C
@@ -639,5 +628,18 @@ fn main() {
         test_mul(&M::mul_4t_cache, 1, &m1, &m2, "mm10", true); // J
         test_mul(&M::mul_s_4t_split, 1, &m1, &m2, "mm11", true); // K
         test_mul(&M::mul_4t, 1, &m1, &m2, "mm12", true); // L
+    } else if mode == "analysis" {
+        test_mul(&M::mul, 100, &m1, &m2, "m1", false); // A
+        test_mul(&M::mul_cache, 100, &m1, &m2, "m2", false); // B
+        test_mul(&M::mul_rw_e, 100, &m1, &m2, "m3", false); // C
+        test_mul(&M::mul_rw, 100, &m1, &m2, "m4", false); // D
+        test_mul(&M::mul_2t, 100, &m1, &m2, "m5", false); // E
+        test_mul(&M::mul_2t_cache, 100, &m1, &m2, "m6", false); // F
+        test_mul(&M::mul_s, 100, &m1, &m2, "m7", false); // G
+        test_mul(&M::mul_s_2t, 100, &m1, &m2, "m8", false); // H
+        test_mul(&M::mul_s_2t_split, 100, &m1, &m2, "m9", false); // I
+        test_mul(&M::mul_4t_cache, 100, &m1, &m2, "m10", false); // J
+        test_mul(&M::mul_s_4t_split, 100, &m1, &m2, "m11", false); // K
+        test_mul(&M::mul_4t, 100, &m1, &m2, "m12", false); // L
     }
 }
