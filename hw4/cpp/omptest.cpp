@@ -20,6 +20,17 @@ int n;
 ofstream myfile1;
 ofstream myfile2;
 ofstream myfile3;
+
+void print_ans(vector<vector<int>> ans)
+{
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < n4; ++j) {
+            printf("%s%d", (j == 0)? "": " ", ans[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 void f_origin_t1()
 {
     int tmp = n;
@@ -40,6 +51,7 @@ void f_origin_t1()
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
         myfile1 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
         if (tmp != 0) myfile1 << ", ";
+        // print_ans(ans);
     }
     myfile1 << "\n";
 }
@@ -64,6 +76,7 @@ void f_origin_t2()
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
         myfile2 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
         if (tmp != 0) myfile2 << ", ";
+        // print_ans(ans);
     }
     myfile2 << "\n";
 }
@@ -88,6 +101,7 @@ void f_origin_t4()
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
         myfile3 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
         if (tmp != 0) myfile3 << ", ";
+        // print_ans(ans);
     }
     myfile3 << "\n";
 }
@@ -95,9 +109,6 @@ void f_origin_t4()
 int main(int argc, char* argv[])
 {
     n = 100;
-    myfile1.open("out_t1_origin.csv", ios::app);
-    myfile2.open("out_t2_origin.csv", ios::app);
-    myfile3.open("out_t4_origin.csv", ios::app);
     int mat;
     matrix1.clear();
     matrix2.clear();
@@ -119,6 +130,9 @@ int main(int argc, char* argv[])
         }
         matrix2.push_back(row2);
     }
+    myfile1.open("o1.csv", ios::app);
+    myfile2.open("o2.csv", ios::app);
+    myfile3.open("o3.csv", ios::app);
     f_origin_t1();
     f_origin_t2();
     f_origin_t4();
