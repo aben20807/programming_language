@@ -578,12 +578,13 @@ fn test_mul(mul: &Fn(&M, &M) -> M, n: i32, m1: &M, m2: &M, filename: &str, print
         let start = Instant::now();
         let _ma = mul(m1, m2);
         let duration = start.elapsed();
+        let duration = duration.as_secs() * 1000_000_000 + (duration.subsec_nanos() as u64);
         if print_file {
-            if let Err(e) = write!(file, "{}, ", duration.subsec_nanos() as f64) {
+            if let Err(e) = write!(file, "{}, ", duration) {
                 eprintln!("Couldn't write to file: {}", e);
             }
         } else {
-            println!("= {} ns", duration.subsec_nanos() as f64);
+            println!("= {} ns", duration);
             println!("{}", _ma);
         }
         n -= 1;
@@ -603,31 +604,31 @@ fn main() {
     let mut m1;
     {
         scan!("{} {}", r, c);
-        print!("{}x{}", r, c);
+        // print!("{}x{}", r, c);
         m1 = M::new(r, c);
         m1.input();
     }
-    print!(" x ");
+    // print!(" x ");
     let mut m2;
     {
         scan!("{} {}", r, c);
-        println!("{}x{}", r, c);
+        // println!("{}x{}", r, c);
         m2 = M::new(r, c);
         m2.input();
     }
     if mode == "answer" {
-        test_mul(&M::mul, 1, &m1, &m2, "m1", true); // A
-        test_mul(&M::mul_cache, 1, &m1, &m2, "m2", true); // B
-        test_mul(&M::mul_rw_e, 1, &m1, &m2, "m3", true); // C
-        test_mul(&M::mul_rw, 1, &m1, &m2, "m4", true); // D
-        test_mul(&M::mul_2t, 1, &m1, &m2, "mm5", true); // E
-        test_mul(&M::mul_2t_cache, 1, &m1, &m2, "mm6", true); // F
-        test_mul(&M::mul_s, 1, &m1, &m2, "m7", true); // G
-        test_mul(&M::mul_s_2t, 1, &m1, &m2, "mm8", true); // H
-        test_mul(&M::mul_s_2t_split, 1, &m1, &m2, "m9", true); // I
+        // test_mul(&M::mul, 1, &m1, &m2, "m1", true); // A
+        // test_mul(&M::mul_cache, 1, &m1, &m2, "m2", true); // B
+        // test_mul(&M::mul_rw_e, 1, &m1, &m2, "m3", true); // C // too slow
+        // test_mul(&M::mul_rw, 1, &m1, &m2, "m4", true); // D // too slow
+        // test_mul(&M::mul_2t, 1, &m1, &m2, "mm5", true); // E
+        // test_mul(&M::mul_2t_cache, 1, &m1, &m2, "mm6", true); // F
+        // test_mul(&M::mul_s, 1, &m1, &m2, "m7", true); // G
+        // test_mul(&M::mul_s_2t, 1, &m1, &m2, "mm8", true); // H
+        // test_mul(&M::mul_s_2t_split, 1, &m1, &m2, "m9", true); // I
         test_mul(&M::mul_4t_cache, 1, &m1, &m2, "mm10", true); // J
-        test_mul(&M::mul_s_4t_split, 1, &m1, &m2, "mm11", true); // K
-        test_mul(&M::mul_4t, 1, &m1, &m2, "mm12", true); // L
+        // test_mul(&M::mul_s_4t_split, 1, &m1, &m2, "mm11", true); // K
+        // test_mul(&M::mul_4t, 1, &m1, &m2, "mm12", true); // L
     } else if mode == "analysis" {
         test_mul(&M::mul, 100, &m1, &m2, "m1", false); // A
         test_mul(&M::mul_cache, 100, &m1, &m2, "m2", false); // B
