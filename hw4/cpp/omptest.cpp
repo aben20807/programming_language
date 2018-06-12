@@ -1,6 +1,5 @@
 // Author: HUNG, JUI-LUNG <jjoe0303@gmail.com>
 // Filename: omptest.cpp
-// Last modified: 2018-06-10 22:02:17
 // g++ -g -Wall -fopenmp -o omptest omptest.cpp
 
 #include <cstdio>
@@ -22,15 +21,15 @@ vector<vector<int> > matrix2;
 int n1, n2, n3, n4;
 int thread_count;
 int n;
-ofstream myfile1;
-ofstream myfile2;
-ofstream myfile3;
-ofstream myfile4;
-ofstream myfile5;
-ofstream myfile6;
-ofstream myfile7;
-ofstream myfile8;
-ofstream myfile9;
+ofstream fout1;
+ofstream fout2;
+ofstream fout3;
+ofstream fout4;
+ofstream fout5;
+ofstream fout6;
+ofstream fout7;
+ofstream fout8;
+ofstream fout9;
 
 void matrix_add(vector<vector<int> > &matrixa, vector<vector<int> > &matrixb,
                 vector<vector<int> > &matrixc)
@@ -97,11 +96,11 @@ void f_origin_t1()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile1 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile1 << ", ";
+        fout1 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout1 << ", ";
         // print_ans(ans);
     }
-    myfile1 << "\n";
+    fout1 << "\n";
 }
 
 void f_origin_t2()
@@ -122,11 +121,11 @@ void f_origin_t2()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile2 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile2 << ", ";
+        fout2 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout2 << ", ";
         // print_ans(ans);
     }
-    myfile2 << "\n";
+    fout2 << "\n";
 }
 
 void f_origin_t4()
@@ -147,11 +146,11 @@ void f_origin_t4()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile3 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile3 << ", ";
+        fout3 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout3 << ", ";
         // print_ans(ans);
     }
-    myfile3 << "\n";
+    fout3 << "\n";
 }
 
 void f_strassen_t1()
@@ -244,11 +243,11 @@ void f_strassen_t1()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile4 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile4 << ", ";
+        fout4 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout4 << ", ";
         // print_ans(ans);
     }
-    myfile4 << "\n";
+    fout4 << "\n";
 }
 
 
@@ -343,11 +342,11 @@ void f_strassen_t2()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile5 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile5 << ", ";
+        fout5 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout5 << ", ";
         // print_ans(ans);
     }
-    myfile5 << "\n";
+    fout5 << "\n";
 }
 
 void f_strassen_t4()
@@ -440,11 +439,11 @@ void f_strassen_t4()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile6 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile6 << ", ";
+        fout6 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout6 << ", ";
         // print_ans(ans);
     }
-    myfile6 << "\n";
+    fout6 << "\n";
 }
 
 void f_cache_t1()
@@ -471,11 +470,11 @@ void f_cache_t1()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile7 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile7 << ", ";
+        fout7 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout7 << ", ";
         // print_ans(ans);
     }
-    myfile7 << "\n";
+    fout7 << "\n";
 }
 
 void f_cache_t2()
@@ -502,11 +501,11 @@ void f_cache_t2()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile8 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile8 << ", ";
+        fout8 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout8 << ", ";
         // print_ans(ans);
     }
-    myfile8 << "\n";
+    fout8 << "\n";
 }
 
 void f_cache_t4()
@@ -533,11 +532,11 @@ void f_cache_t4()
             }
         }
         chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-        myfile9 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
-        if (tmp != 0) myfile9 << ", ";
+        fout9 << chrono::duration_cast<chrono::nanoseconds>(t2 - t1).count();
+        if (tmp != 0) fout9 << ", ";
         // print_ans(ans);
     }
-    myfile9 << "\n";
+    fout9 << "\n";
 }
 
 int main(int argc, char* argv[])
@@ -564,31 +563,48 @@ int main(int argc, char* argv[])
         }
         matrix2.push_back(row2);
     }
-    myfile1.open("o1.csv", ios::app);
-    myfile2.open("o2.csv", ios::app);
-    myfile3.open("o3.csv", ios::app);
-    myfile4.open("o4.csv", ios::app);
-    myfile5.open("o5.csv", ios::app);
-    myfile6.open("o6.csv", ios::app);
-    myfile7.open("o7.csv", ios::app);
-    myfile8.open("o8.csv", ios::app);
-    myfile9.open("o9.csv", ios::app);
-    f_origin_t1(); // o1
-    f_origin_t2(); // o2
-    f_origin_t4(); // o3
-    f_strassen_t1(); // o4
-    f_strassen_t2(); // o5
-    f_strassen_t4(); // o6
-    f_cache_t1(); // o7
-    f_cache_t2(); // o8
-    f_cache_t4(); // o9
-    myfile1.close();
-    myfile2.close();
-    myfile3.close();
-    myfile4.close();
-    myfile5.close();
-    myfile6.close();
-    myfile7.close();
-    myfile8.close();
-    myfile9.close();
+    /* A */
+    fout1.open("o1.csv", ios::app);
+    f_origin_t1();
+    fout1.close();
+
+    /* E */
+    fout2.open("o2.csv", ios::app);
+    f_origin_t2();
+    fout2.close();
+
+    /* L */
+    fout3.open("o3.csv", ios::app);
+    f_origin_t4();
+    fout3.close();
+
+    /* G */
+    fout4.open("o4.csv", ios::app);
+    f_strassen_t1();
+    fout4.close();
+
+    /* H */
+    fout5.open("o5.csv", ios::app);
+    f_strassen_t2();
+    fout5.close();
+
+    /* K */
+    fout6.open("o6.csv", ios::app);
+    f_strassen_t4();
+    fout6.close();
+
+    /* B */
+    fout7.open("o7.csv", ios::app);
+    f_cache_t1();
+    fout7.close();
+
+    /* F */
+    fout8.open("o8.csv", ios::app);
+    f_cache_t2();
+    fout8.close();
+
+    /* J */
+    fout9.open("o9.csv", ios::app);
+    f_cache_t4();
+    fout9.close();
 }
