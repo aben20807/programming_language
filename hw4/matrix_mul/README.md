@@ -37,7 +37,7 @@ $ bash run.sh
 ## Data structure
 
 + matrix: two-dimensional vector.
-+ matrix\_tr: two-dimensional vector, transform of matrix.
++ matrix\_tr: two-dimensional vector, transpose of matrix.
 + m11: a quarter matrix in the upper left corner of matrix.
 + m12: a quarter matrix in the upper right corner of matrix.
 + m21: a quarter matrix in the lower left corner of matrix.
