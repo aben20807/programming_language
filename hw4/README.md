@@ -1,18 +1,19 @@
-# matrix\_mul
+# Matrix Multiplication
 
-+ Matrix Multiplication
+## member
+
++ 何中淼、鍾日超、洪瑞隆、黃柏瑄
 
 ## Subproject
 
-+ cpp: matrix multiplication implemented by C++11
-+ matrix\_creator: create test case
-+ matrix\_mul: matrix multiplication implemented by Rust
++ cpp: matrix multiplication implemented by C++11.
++ java: matrix multiplication implemented by Java.
++ matlab: matrix multiplication implemented by Matlab.
++ matrix\_creator: create test case.
++ matrix\_mul: matrix multiplication implemented by Rust.
++ plot: plot analysis images.
 
 ## Methods
-
-### Usage
-
-+ mul(): let c = a.mul(b), b need to be a reference of a matrix.
 
 ### Function description
 
